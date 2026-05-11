@@ -6,7 +6,7 @@
   "author": "Felipe Cepluki",
   "repository": {
     "type": "git",
-    "url": "https://github.com/felipecepluki/agree-first"
+    "url": "git+https://github.com/felipecepluki/agree-first.git"
   },
   "homepage": "https://github.com/felipecepluki/agree-first#readme",
   "bugs": {
@@ -28,7 +28,10 @@
     "agreement",
     "compliance"
   ],
-  "sideEffects": ["*.css", "dist/styles/*.css"],
+  "sideEffects": [
+    "*.css",
+    "dist/styles/*.css"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
