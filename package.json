@@ -1,0 +1,71 @@
+{
+  "name": "agree-first",
+  "version": "0.1.0",
+  "description": "Headless consent & terms modal for React — enforces scroll reading and generates audit payloads",
+  "license": "MIT",
+  "author": "Felipe Cepluki",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cepluki/agree-first"
+  },
+  "homepage": "https://github.com/cepluki/agree-first#readme",
+  "bugs": {
+    "url": "https://github.com/cepluki/agree-first/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "react",
+    "terms",
+    "consent",
+    "gdpr",
+    "lgpd",
+    "modal",
+    "terms-of-service",
+    "privacy-policy",
+    "headless",
+    "agreement",
+    "compliance"
+  ],
+  "sideEffects": ["*.css", "dist/styles/*.css"],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./styles": "./dist/styles/default.css"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^29.1.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^4.1.5"
+  }
+}

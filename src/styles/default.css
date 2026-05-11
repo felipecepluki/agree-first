@@ -1,0 +1,442 @@
+/* ── CSS custom properties (light + dark) ──────────────── */
+
+:root {
+  --af-accent:        #6366f1;
+  --af-accent-hover:  #4f46e5;
+  --af-success:       #10b981;
+
+  --af-bg:            #ffffff;
+  --af-bg-subtle:     #f3f4f6;
+  --af-bg-hover:      #f3f4f6;
+
+  --af-text:          #111827;
+  --af-text-muted:    #374151;
+  --af-text-faint:    #9ca3af;
+  --af-text-icon:     #6b7280;
+
+  --af-border:        #f3f4f6;
+  --af-shadow:        rgba(0, 0, 0, 0.20);
+  --af-overlay-bg:    rgba(0, 0, 0, 0.50);
+
+  --af-font-family:   system-ui, -apple-system, sans-serif;
+  --af-font-size:     14px;
+  --af-modal-max-width: 720px;
+  --af-modal-max-height: 90dvh;
+  --af-radius:        16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --af-accent:        #818cf8;
+    --af-accent-hover:  #6366f1;
+    --af-success:       #34d399;
+
+    --af-bg:            #1f2937;
+    --af-bg-subtle:     #111827;
+    --af-bg-hover:      #374151;
+
+    --af-text:          #f9fafb;
+    --af-text-muted:    #d1d5db;
+    --af-text-faint:    #6b7280;
+    --af-text-icon:     #9ca3af;
+
+    --af-border:        #374151;
+    --af-shadow:        rgba(0, 0, 0, 0.50);
+    --af-overlay-bg:    rgba(0, 0, 0, 0.70);
+  }
+}
+
+/* ── Screen reader only ─────────────────────────────────── */
+
+.af-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Container ─────────────────────────────────────────── */
+
+.af-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: var(--af-font-family);
+  font-size: var(--af-font-size);
+  color: var(--af-text);
+  width: 100%;
+}
+
+/* ── Checkbox row ───────────────────────────────────────── */
+
+.af-checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.af-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--af-accent);
+  cursor: pointer;
+}
+
+.af-label {
+  color: var(--af-text-muted);
+  line-height: 1.5;
+}
+
+.af-label-link {
+  color: var(--af-accent);
+  text-decoration: underline;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: color 0.1s ease;
+}
+
+.af-label-link:hover {
+  color: var(--af-accent-hover);
+}
+
+.af-label-link:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 2px;
+}
+
+/* ── Main action button ─────────────────────────────────── */
+
+.af-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--af-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  align-self: flex-start;
+}
+
+.af-button:hover:not(:disabled) {
+  background: var(--af-accent-hover);
+}
+
+.af-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.af-button:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 2px;
+}
+
+/* ── Modal overlay ──────────────────────────────────────── */
+
+.af-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--af-overlay-bg);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: af-fade-in 0.15s ease;
+}
+
+@keyframes af-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes af-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ── Modal card ─────────────────────────────────────────── */
+
+.af-modal {
+  background: var(--af-bg);
+  border-radius: var(--af-radius);
+  box-shadow: 0 20px 60px var(--af-shadow);
+  width: 100%;
+  max-width: var(--af-modal-max-width);
+  max-height: var(--af-modal-max-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: af-slide-up 0.2s ease;
+}
+
+@keyframes af-slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes af-slide-down {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(12px); opacity: 0; }
+}
+
+.af-overlay.af-closing {
+  animation: af-fade-out 0.2s ease forwards;
+}
+
+.af-overlay.af-closing .af-modal {
+  animation: af-slide-down 0.2s ease forwards;
+}
+
+/* ── Modal header ───────────────────────────────────────── */
+
+.af-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--af-border);
+  flex-shrink: 0;
+}
+
+.af-modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--af-text);
+}
+
+.af-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--af-text-icon);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s ease, color 0.1s ease;
+  flex-shrink: 0;
+}
+
+.af-modal-close:hover {
+  background: var(--af-bg-hover);
+  color: var(--af-text);
+}
+
+.af-modal-close:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 2px;
+}
+
+/* ── Tabs ───────────────────────────────────────────────── */
+
+.af-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--af-border);
+  padding: 0 24px;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.af-tab {
+  padding: 12px 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--af-text-faint);
+  cursor: pointer;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.af-tab + .af-tab {
+  margin-left: 20px;
+}
+
+.af-tab:hover {
+  color: var(--af-text-muted);
+}
+
+.af-tab--active {
+  color: var(--af-accent);
+  border-bottom-color: var(--af-accent);
+}
+
+.af-tab--done {
+  color: var(--af-success);
+}
+
+.af-tab--done.af-tab--active {
+  color: var(--af-success);
+  border-bottom-color: var(--af-success);
+}
+
+.af-tab:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Modal scroll area ──────────────────────────────────── */
+
+.af-modal-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--af-text-muted);
+  min-height: 0;
+  outline: none;
+}
+
+.af-modal-scroll-area:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: -2px;
+}
+
+.af-modal-scroll-area h1,
+.af-modal-scroll-area h2,
+.af-modal-scroll-area h3 {
+  color: var(--af-text);
+  margin-top: 0;
+}
+
+/* ── Progress bar ───────────────────────────────────────── */
+
+.af-progress-bar {
+  height: 3px;
+  background: var(--af-bg-subtle);
+  flex-shrink: 0;
+}
+
+.af-progress-fill {
+  height: 100%;
+  background: var(--af-accent);
+  transition: width 0.1s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── Modal footer (per tab) ─────────────────────────────── */
+
+.af-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-top: 1px solid var(--af-border);
+  flex-shrink: 0;
+}
+
+.af-doc-link {
+  font-size: 13px;
+  color: var(--af-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.af-doc-link:hover {
+  text-decoration: underline;
+}
+
+.af-scroll-hint {
+  font-size: 13px;
+  color: var(--af-text-faint);
+  flex: 1;
+  text-align: right;
+}
+
+/* ── Accept row ─────────────────────────────────────────── */
+
+.af-modal-accept-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 24px 20px;
+  flex-shrink: 0;
+}
+
+.af-accepted-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--af-success);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.af-modal-accept {
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--af-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.af-modal-accept:hover:not(:disabled) {
+  background: var(--af-accent-hover);
+}
+
+.af-modal-accept:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.af-modal-accept:focus-visible {
+  outline: 2px solid var(--af-accent);
+  outline-offset: 2px;
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .af-modal {
+    border-radius: 12px 12px 0 0;
+    max-height: 92dvh;
+  }
+
+  .af-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .af-modal-header,
+  .af-modal-scroll-area,
+  .af-modal-footer,
+  .af-modal-accept-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .af-tabs {
+    padding: 0 16px;
+  }
+}
