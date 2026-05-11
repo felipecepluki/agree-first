@@ -6,11 +6,11 @@
   "author": "Felipe Cepluki",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cepluki/agree-first"
+    "url": "https://github.com/felipecepluki/agree-first"
   },
-  "homepage": "https://github.com/cepluki/agree-first#readme",
+  "homepage": "https://github.com/felipecepluki/agree-first#readme",
   "bugs": {
-    "url": "https://github.com/cepluki/agree-first/issues"
+    "url": "https://github.com/felipecepluki/agree-first/issues"
   },
   "engines": {
     "node": ">=18"
