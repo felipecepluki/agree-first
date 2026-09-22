@@ -1,6 +1,6 @@
 # agree-first
 
-Headless consent & terms modal for React. Enforces scroll reading across multiple documents and generates a timestamped audit payload on acceptance. Works standalone or inside any form library.
+Headless consent & terms modal for React. Tracks scroll completion across multiple documents and generates a timestamped consent payload on acceptance. Works standalone or inside any form library.
 
 ```bash
 npm install agree-first
@@ -24,7 +24,7 @@ You import the CSS if you want the built-in style. If you prefer your own UI (sh
       agree-first    │  State (hook)                   │
                      │  ├─ scroll tracking             │
                      │  ├─ tab progress                │
-                     │  ├─ audit payload               │
+                     │  ├─ consent payload             │
                      │  └─ localStorage persistence    │
                      │                                 │
                      │  Modal (portal → document.body) │
@@ -288,7 +288,7 @@ const DOCS = [
 |------|------|---------|-------------|
 | `documents` | `AgreeFirstDocument[]` | — | **Required.** One or more documents to present. |
 | `children` | `ReactNode` | — | Submit button label (default UI). Omit to hide the button. |
-| `onAccept` | `(payload?: AcceptPayload) => void` | — | Called on submit. Receives the full audit payload. |
+| `onAccept` | `(payload?: AcceptPayload) => void` | — | Called on submit. Receives the full consent payload. |
 | `onOpen` | `() => void` | — | Called when the modal opens. Use for analytics. |
 | `render` | `(props: RenderProps) => ReactNode` | — | Headless mode — bring your own checkbox and button. |
 | `consentId` | `string` | auto-generated | Custom ID stored in the payload. |
@@ -352,7 +352,7 @@ interface RenderProps {
 
 ---
 
-## Audit payload — `AcceptPayload`
+## Consent payload — `AcceptPayload`
 
 Returned by `onAccept` and `getPayload()`:
 
@@ -371,7 +371,7 @@ interface AcceptPayload {
 }
 ```
 
-Store this server-side for LGPD / GDPR audit trails.
+Store this server-side if it is useful to your product's consent records. The payload records interactions in this UI; it does not by itself prove that someone read a document or establish legal compliance.
 
 ---
 
@@ -522,6 +522,12 @@ import { AgreeFirst } from "agree-first";
 - Live region announces tab changes to screen readers
 - All interactive elements have `:focus-visible` outlines
 - Keyboard scroll when the document area is focused: `Space` / `PageDown` scroll down, `PageUp` scrolls up, `ArrowDown` / `ArrowUp` scroll by line, `End` jumps to bottom, `Home` jumps to top
+
+---
+
+## Compliance notice
+
+`agree-first` helps implement a consent flow and records its UI state. It is not legal advice and does not guarantee compliance with LGPD, GDPR, or any other regulation. Consult qualified counsel for your product's legal requirements.
 
 ---
 

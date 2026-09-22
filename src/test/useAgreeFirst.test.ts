@@ -13,7 +13,7 @@ const MULTI_DOCS: AgreeFirstDocument[] = [
 ];
 
 beforeEach(() => {
-  localStorage.clear();
+  window.localStorage.clear();
 });
 
 describe("useAgreeFirst", () => {

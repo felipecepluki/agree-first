@@ -1,7 +1,8 @@
 {
   "name": "agree-first",
   "version": "0.1.0",
-  "description": "Headless consent & terms modal for React — enforces scroll reading and generates audit payloads",
+  "type": "commonjs",
+  "description": "Headless React consent and terms modal that tracks scroll completion and generates timestamped consent payloads",
   "license": "MIT",
   "author": "Felipe Cepluki",
   "repository": {
@@ -26,7 +27,7 @@
     "privacy-policy",
     "headless",
     "agreement",
-    "compliance"
+    "consent-management"
   ],
   "sideEffects": [
     "*.css",
@@ -37,11 +38,19 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
-    "./styles": "./dist/styles/default.css"
+    "./styles": {
+      "types": "./dist/styles/default.d.ts",
+      "default": "./dist/styles/default.css"
+    }
   },
   "files": [
     "dist",
@@ -54,19 +63,23 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run typecheck && npm run build"
+    "lint:package": "publint --pack false",
+    "check:package": "attw --pack . --profile node16",
+    "prepublishOnly": "npm test && npm run typecheck && npm run build && npm run lint:package && npm run check:package && npm pack --dry-run"
   },
   "peerDependencies": {
     "react": ">=18",
     "react-dom": ">=18"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "jsdom": "^29.1.1",
+    "publint": "^0.3.24",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^4.1.5"
