@@ -56,11 +56,15 @@ export interface AgreeFirstClassNames {
 
 export interface AgreeFirstStrings {
   acceptText?: string;
+  acceptedText?: string;
   continueText?: string;
   scrollHint?: string;
   readFullText?: string;
   modalTitle?: string;
   closeText?: string;
+  tabsLabel?: string;
+  scrollProgressLabel?: string;
+  formatDocumentPosition?: (current: number, total: number) => string;
 }
 
 export interface RenderProps {

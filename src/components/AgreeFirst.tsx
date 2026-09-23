@@ -27,9 +27,7 @@ interface TabContentProps {
   tabIndex: number;
   totalDocs: number;
   initialCompleted: boolean;
-  requireScroll: boolean;
-  scrollHint: string;
-  readFullText: string;
+  scrollProgressLabel: string;
   cls: ReturnType<typeof mkCls>;
   classNames: AgreeFirstClassNames;
   onComplete: () => void;
@@ -44,9 +42,7 @@ function TabContent({
   tabIndex,
   totalDocs,
   initialCompleted,
-  requireScroll,
-  scrollHint,
-  readFullText,
+  scrollProgressLabel,
   cls,
   classNames,
   onComplete,
@@ -78,7 +74,6 @@ function TabContent({
     return () => clearTimeout(timer);
   }, [minReadTimeMs, timeCompleted]);
 
-  const done = initialCompleted || hasScrolled;
   const displayProgress = initialCompleted ? 1 : progress;
   const hasTabs = totalDocs > 1;
 
@@ -117,7 +112,7 @@ function TabContent({
         aria-valuenow={Math.round(displayProgress * 100)}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label="Reading progress"
+        aria-label={scrollProgressLabel}
       >
         <div
           className={cls("af-progress-fill", classNames.progressFill)}
@@ -125,21 +120,6 @@ function TabContent({
         />
       </div>
 
-      <div className={cls("af-modal-footer", classNames.modalFooter)}>
-        <a
-          className={cls("af-doc-link", classNames.docLink)}
-          href={doc.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {readFullText} ↗
-        </a>
-        {requireScroll && !done && (
-          <span className={cls("af-scroll-hint", classNames.scrollHint)}>
-            {scrollHint}
-          </span>
-        )}
-      </div>
     </>
   );
 }
@@ -148,11 +128,15 @@ function TabContent({
 
 interface TermsModalProps {
   documents: AgreeFirstDocument[];
-  modalTitle: string;
+  modalTitle?: string;
   acceptText: string;
+  acceptedText: string;
   continueText: string;
   scrollHint: string;
   readFullText: string;
+  tabsLabel: string;
+  scrollProgressLabel: string;
+  formatDocumentPosition: (current: number, total: number) => string;
   closeButtonLabel: string;
   requireScroll: boolean;
   activeTab: number;
@@ -178,9 +162,13 @@ function TermsModal({
   documents,
   modalTitle,
   acceptText,
+  acceptedText,
   continueText,
   scrollHint,
   readFullText,
+  tabsLabel,
+  scrollProgressLabel,
+  formatDocumentPosition,
   closeButtonLabel,
   requireScroll,
   activeTab,
@@ -208,6 +196,8 @@ function TermsModal({
   const cls = mkCls(unstyled);
   const isLastTab = activeTab === documents.length - 1;
   const hasTabs = documents.length > 1;
+  const activeDocument = documents[activeTab];
+  const activeDocumentHeading = `${activeDocument.title} — ${formatDocumentPosition(activeTab + 1, documents.length)}`;
 
   const { containerRef } = useFocusTrap({ onEscape: onClose, returnFocusTo });
 
@@ -241,8 +231,13 @@ function TermsModal({
       >
         {/* Screen-reader announcement for tab changes */}
         {hasTabs && (
-          <div aria-live="polite" aria-atomic="true" className="af-sr-only">
-            {`${documents[activeTab].title} — ${activeTab + 1} of ${documents.length}`}
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="af-sr-only"
+            style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0, 0, 0, 0)", whiteSpace: "nowrap", border: 0 }}
+          >
+            {activeDocumentHeading}
           </div>
         )}
 
@@ -252,14 +247,16 @@ function TermsModal({
             id={`${uid}-title`}
             className={cls("af-modal-title", classNames.modalTitle)}
           >
-            {modalTitle}
+            {modalTitle ?? (hasTabs ? activeDocumentHeading : activeDocument.title)}
           </span>
           <button
             className={cls("af-modal-close", classNames.modalClose)}
             onClick={onClose}
             aria-label={closeButtonLabel}
           >
-            ✕
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" aria-hidden="true" focusable="false">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -268,7 +265,7 @@ function TermsModal({
           <div
             className={cls("af-tabs", classNames.tabs)}
             role="tablist"
-            aria-label="Documents"
+            aria-label={tabsLabel}
           >
             {documents.map((doc, i) => {
               const accepted = isTabAccepted(i);
@@ -303,37 +300,49 @@ function TermsModal({
         <TabContent
           key={activeTab}
           uid={uid}
-          doc={documents[activeTab]}
+          doc={activeDocument}
           tabIndex={activeTab}
           totalDocs={documents.length}
           initialCompleted={scrollCompleted.has(activeTab)}
-          requireScroll={requireScroll}
-          scrollHint={scrollHint}
-          readFullText={readFullText}
+          scrollProgressLabel={scrollProgressLabel}
           cls={cls}
           classNames={classNames}
           onComplete={() => handleComplete(activeTab)}
           timeCompleted={timeCompleted.has(activeTab)}
           onTimeComplete={() => markTimeCompleted(activeTab)}
-          minReadTimeMs={documents[activeTab]?.minReadTimeMs}
+          minReadTimeMs={activeDocument.minReadTimeMs}
         />
 
-        {/* Accept row */}
-        <div className={cls("af-modal-accept-row", classNames.modalAcceptRow)}>
-          {isFrontierTab ? (
-            <button
-              className={cls("af-modal-accept", classNames.acceptButton)}
-              onClick={acceptTab}
-              disabled={!canAcceptCurrentTab}
-              aria-disabled={!canAcceptCurrentTab}
-            >
-              {isLastTab ? acceptText : continueText}
-            </button>
-          ) : (
-            <span className={cls("af-accepted-badge", classNames.acceptBadge)}>
-              ✓ Accepted
+        <div className={cls("af-modal-footer", classNames.modalFooter)}>
+          <a
+            className={cls("af-doc-link", classNames.docLink)}
+            href={activeDocument.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {readFullText} ↗
+          </a>
+          {requireScroll && !scrollCompleted.has(activeTab) && (
+            <span className={cls("af-scroll-hint", classNames.scrollHint)}>
+              {scrollHint}
             </span>
           )}
+          <div className={cls("af-modal-accept-row", classNames.modalAcceptRow)}>
+            {isFrontierTab ? (
+              <button
+                className={cls("af-modal-accept", classNames.acceptButton)}
+                onClick={acceptTab}
+                disabled={!canAcceptCurrentTab}
+                aria-disabled={!canAcceptCurrentTab}
+              >
+                {isLastTab ? acceptText : continueText}
+              </button>
+            ) : (
+              <span className={cls("af-accepted-badge", classNames.acceptBadge)}>
+                ✓ {acceptedText}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>,
@@ -363,7 +372,7 @@ function DefaultLabel({
   );
 
   if (documents.length === 1) {
-    return <>I have read and agree to the {makeLink(documents[0])}</>;
+    return <>I agree to the {makeLink(documents[0])}</>;
   }
 
   const links = documents.map((doc, i) => (
@@ -373,7 +382,7 @@ function DefaultLabel({
     </span>
   ));
 
-  return <>I have read and agree to the {links}</>;
+  return <>I agree to the {links}</>;
 }
 
 // ── AgreeFirst ─────────────────────────────────────────────────────────────────
@@ -428,6 +437,10 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
     const resolvedReadFullText = strings?.readFullText ?? readFullText;
     const resolvedModalTitle = strings?.modalTitle ?? modalTitle;
     const resolvedCloseText = strings?.closeText ?? "Close";
+    const resolvedAcceptedText = strings?.acceptedText ?? "Accepted";
+    const resolvedTabsLabel = strings?.tabsLabel ?? "Documents";
+    const resolvedScrollProgressLabel = strings?.scrollProgressLabel ?? "Scroll progress";
+    const formatDocumentPosition = strings?.formatDocumentPosition ?? ((current: number, total: number) => `${current} of ${total}`);
 
     const {
       isModalOpen,
@@ -497,17 +510,18 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isModalOpen]);
 
-    const defaultModalTitle =
-      documents.length === 1 ? documents[0].title : "Terms & Privacy";
-
     const modal = renderedOpen ? (
       <TermsModal
         documents={documents}
-        modalTitle={resolvedModalTitle ?? defaultModalTitle}
+        modalTitle={resolvedModalTitle}
         acceptText={resolvedAcceptText}
+        acceptedText={resolvedAcceptedText}
         continueText={resolvedContinueText}
         scrollHint={resolvedScrollHint}
         readFullText={resolvedReadFullText}
+        tabsLabel={resolvedTabsLabel}
+        scrollProgressLabel={resolvedScrollProgressLabel}
+        formatDocumentPosition={formatDocumentPosition}
         closeButtonLabel={resolvedCloseText}
         requireScroll={requireScroll}
         activeTab={activeTab}

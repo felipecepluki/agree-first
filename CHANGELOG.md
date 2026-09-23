@@ -8,18 +8,19 @@ All notable changes to this project will be documented in this file.
 
 - **Headless consent modal** — `AgreeFirst` component with render prop and default UI modes
 - **Multi-document tabs** — present Terms of Service, Privacy Policy, and any custom documents in a sequential tab flow
+- **Flexible modal layout** — the default heading follows the active document, tabs share available width equally, and the document link and acceptance action align in one footer; the default theme adds a larger close control and more readable document link
 - **Scroll enforcement** — progress bar + `requireScroll` lock that prevents acceptance until the user reaches the bottom
-- **Minimum read time** — `minReadTimeMs` per document, independent of or combined with scroll enforcement
-- **Audit payload** — timestamped `AcceptPayload` with document list, scroll evidence, and `userAgent`; store server-side for GDPR/LGPD compliance
+- **Minimum display time** — `minReadTimeMs` per document, independent of or combined with scroll enforcement
+- **Consent payload** — timestamped `AcceptPayload` with document list, scroll-completion indexes, and `userAgent`; useful as an interaction record when stored server-side
 - **Version detection** — `previousPayload` / `storageKey` auto-accepts returning users or sets `needsReAcceptance` when a document version changed
 - **Form library integration** — `value` / `onChange` / `onBlur` / `name` props compatible with React Hook Form, Formik, TanStack Form, and react-final-form
-- **i18n / strings** — all UI text overridable via the `strings` prop; `closeText` controls the modal close button aria-label
+- **i18n / strings** — modal copy, accessibility labels, and document position text are overridable via `strings`; document content, checkbox copy, and submit text are supplied separately
 - **Accessibility** — focus trap, Escape key, `role="dialog"`, `role="tablist"`, `role="progressbar"`, live region for tab changes, full `:focus-visible` support
 - **Keyboard scroll** — Space, PageDown/Up, ArrowDown/Up, Home, End scroll the document area when focused
 - **Dark mode** — automatic via `prefers-color-scheme: dark`; all colors exposed as CSS custom properties (`--af-*`)
 - **CSS custom properties** — full theme control without touching `classNames`
 - **`classNames` overrides** — per-element class injection for unstyled / partial-styled setups
-- **`unstyled` mode** — strip all default classes; apply your own via `classNames`
+- **`unstyled` mode** — strip all default classes; apply your own via `classNames` while the screen-reader announcement remains visually hidden
 - **Entry and exit animations** — slide-up entry, slide-down exit with fade overlay
 - **`onOpen` callback** — fires when the modal opens (analytics)
 - **`onDecline` callback** — fires when the modal closes without full acceptance

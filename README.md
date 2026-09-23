@@ -97,7 +97,7 @@ import { Checkbox, Button } from "your-ui-library";
       <Checkbox
         checked={isAccepted}
         onChange={(checked) => { if (checked && !isAccepted) openModal(); }}
-        label="I have read and agree to the Terms of Service and Privacy Policy"
+        label="I agree to the Terms of Service and Privacy Policy"
       />
       <Button disabled={!canSubmit} onClick={submit}>
         Create account
@@ -193,7 +193,7 @@ import { Field } from "react-final-form";
 </Field>
 ```
 
-When `value` changes from `true` to `false` (e.g. `form.reset()`), `agree-first` automatically resets internal modal progress — the user will need to read and accept again.
+When `value` changes from `true` to `false` (e.g. `form.reset()`), `agree-first` automatically resets internal modal progress — the user will need to review and accept again.
 
 ---
 
@@ -239,25 +239,28 @@ On next visit, if document versions match, the user is auto-accepted. If a versi
 
 ## i18n / strings
 
-Override all UI text in one object instead of passing individual string props:
+Override the modal's text in one object instead of passing individual string props:
 
 ```tsx
 <AgreeFirst
   documents={DOCS}
   strings={{
     acceptText:   "Eu Aceito",
+    acceptedText: "Aceito",
     continueText: "Aceitar e Continuar →",
     scrollHint:   "↓ Role até o final para continuar",
     readFullText: "Ler documento completo",
-    modalTitle:   "Termos e Privacidade",
     closeText:    "Fechar",
+    tabsLabel:    "Documentos",
+    scrollProgressLabel: "Progresso da rolagem",
+    formatDocumentPosition: (current, total) => `${current} de ${total}`,
   }}
 >
   Criar conta
 </AgreeFirst>
 ```
 
-Individual props (`acceptText`, `scrollHint`, etc.) still work — `strings` takes precedence when both are provided.
+By default, the heading follows the active document and shows its position. Set `modalTitle` for a fixed heading. Individual props (`acceptText`, `scrollHint`, etc.) still work — `strings` takes precedence when both are provided. Translate the checkbox with `label`, document names and content with `documents`, and the optional submit button with `children`.
 
 ---
 
@@ -295,12 +298,12 @@ const DOCS = [
 | `label` | `ReactNode` | auto-generated | Custom checkbox label text (default UI). |
 | `requireScroll` | `boolean` | `true` | Lock the accept button until the user scrolls to the bottom. |
 | `requireCheckbox` | `boolean` | `true` | Show the checkbox and lock submit until it is checked. |
-| `modalTitle` | `string` | document title | Modal heading. |
+| `modalTitle` | `string` | active document title (and position when multiple) | Override the modal heading with a fixed title. |
 | `acceptText` | `string` | `"I Accept"` | Accept button label on the last tab. |
 | `continueText` | `string` | `"Accept & Continue →"` | Accept button label between tabs. |
 | `scrollHint` | `string` | `"↓ Scroll to the bottom to continue"` | Hint shown before scroll completes. |
 | `readFullText` | `string` | `"Read full document"` | Footer link label. |
-| `strings` | `AgreeFirstStrings` | — | Override all text labels at once (i18n). Takes precedence over individual string props. |
+| `strings` | `AgreeFirstStrings` | — | Override modal text and accessibility labels at once (i18n). Takes precedence over individual string props. |
 | `previousPayload` | `AcceptPayload` | — | Last accepted payload. Enables version detection and auto-accept. |
 | `storageKey` | `string` | — | localStorage key for automatic persistence. |
 | `closeOnOverlayClick` | `boolean` | `true` | Set to `false` to prevent closing by clicking the backdrop. |
@@ -313,6 +316,8 @@ const DOCS = [
 | `unstyled` | `boolean` | `false` | Remove all default classes. Apply your own via `classNames`. |
 | `className` | `string` | — | Extra class on the outer container (default UI). |
 | `classNames` | `AgreeFirstClassNames` | — | Override individual element classes. |
+
+`strings` also accepts `acceptedText`, `tabsLabel`, and `scrollProgressLabel`, plus `formatDocumentPosition(current, total)` for the heading and tab announcement. Document titles and content come from `documents`; the checkbox copy comes from `label`, and the optional submit button text comes from `children`.
 
 ---
 
@@ -441,43 +446,58 @@ Override the theme without touching `classNames`:
   /* Colors */
   --af-accent:          #6366f1;   /* primary color (buttons, links, progress) */
   --af-accent-hover:    #4f46e5;
+  --af-accent-foreground: #ffffff; /* text on primary buttons */
   --af-success:         #10b981;   /* "accepted" badge and tab check */
   --af-bg:              #ffffff;   /* modal background */
-  --af-bg-subtle:       #f3f4f6;   /* progress bar track */
-  --af-bg-hover:        #f3f4f6;   /* hover states */
-  --af-text:            #111827;   /* headings */
-  --af-text-muted:      #374151;   /* body text */
-  --af-text-faint:      #9ca3af;   /* hints, inactive tabs */
-  --af-text-icon:       #6b7280;   /* close button icon */
-  --af-border:          #f3f4f6;
+  --af-bg-subtle:       #f8fafc;   /* progress bar track */
+  --af-bg-hover:        #f1f5f9;   /* hover states */
+  --af-text:            #0f172a;   /* headings */
+  --af-text-muted:      #475569;   /* body text */
+  --af-text-faint:      #64748b;   /* hints, inactive tabs */
+  --af-text-icon:       #64748b;   /* close button icon */
+  --af-border:          #e2e8f0;
   --af-shadow:          rgba(0, 0, 0, 0.20);
   --af-overlay-bg:      rgba(0, 0, 0, 0.50);
 
   /* Typography */
   --af-font-family:     system-ui, -apple-system, sans-serif;
-  --af-font-size:       14px;
+  --af-font-size:       15px;
 
-  /* Modal sizing */
-  --af-modal-max-width: 720px;     /* increase for wider layouts, e.g. 960px */
+  /* Layout and reading */
+  --af-modal-width: min(100%, 52rem); /* e.g. min(100%, 60rem) for a wider card */
   --af-modal-max-height: 90dvh;
   --af-radius:          16px;      /* border-radius of the modal card */
+  --af-modal-padding-inline: clamp(16px, 3vw, 28px);
+  --af-modal-padding-block: 20px;
+  --af-content-text-align: justify; /* use left or start if preferred */
+  --af-content-text-align-mobile: start;
+
+  /* Scrollbar */
+  --af-scrollbar-size: 10px;
+  --af-scrollbar-track: transparent;
+  --af-scrollbar-thumb: #cbd5e1;
+  --af-scrollbar-thumb-hover: #94a3b8;
+  --af-close-button-size: 42px;
+  --af-close-icon-size: 20px;
+  --af-link-underline-offset: 4px;
 }
 ```
 
-Dark mode is handled automatically via `prefers-color-scheme: dark`. To override the dark tokens in an app that uses class-based theming, re-declare the variables under your dark selector:
+The modal is rendered in a portal under `document.body`, so define theme variables on `:root`, `html`, `body`, or a selector that also contains the portal. Dark mode is handled automatically via `prefers-color-scheme: dark`. To override the dark tokens in an app that uses class-based theming, re-declare the variables under your dark selector:
 
 ```css
 .dark {
   --af-accent:      #818cf8;
+  --af-accent-foreground: #111827;
   --af-success:     #34d399;
-  --af-bg:          #1f2937;
+  --af-bg:          #171f2d;
   --af-bg-subtle:   #111827;
-  --af-bg-hover:    #374151;
+  --af-bg-hover:    #263247;
   --af-text:        #f9fafb;
-  --af-text-muted:  #d1d5db;
-  --af-text-faint:  #6b7280;
-  --af-text-icon:   #9ca3af;
-  --af-border:      #374151;
+  --af-text-muted:  #cbd5e1;
+  --af-text-faint:  #94a3b8;
+  --af-text-icon:   #cbd5e1;
+  --af-border:      #334155;
   /* … */
 }
 ```
@@ -509,6 +529,8 @@ import { AgreeFirst } from "agree-first";
   Continue
 </AgreeFirst>
 ```
+
+`unstyled` removes the package's visual classes. The modal structure and accessibility behavior remain. In this mode, your app must style the classes supplied through `classNames`, including the tabs, scroll area, progress bar, and footer. The live tab announcement stays visually hidden without the package stylesheet.
 
 ---
 
