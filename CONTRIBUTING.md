@@ -31,3 +31,5 @@ Issues and discussions can cover bugs, usage, and documentation. This project do
 ## Publishing
 
 Maintainers own npm publication, release credentials, and release decisions. Contributors should not publish the package or include secrets in pull requests. A passing pull request is not itself a release.
+
+For the manual pre-release checks, package smoke test, ownership verification, and recovery guidance, see [RELEASING.md](RELEASING.md). Release automation and npm provenance are intentionally out of scope for now.
