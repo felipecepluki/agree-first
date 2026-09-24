@@ -195,6 +195,22 @@ describe("useAgreeFirst", () => {
     expect(result.current.scrollProgress).toBe(1);
   });
 
+  it("reports new scroll progress again after reset", () => {
+    const onScrollProgress = vi.fn();
+    const { result } = renderHook(() =>
+      useAgreeFirst({ documents: DOCS, onScrollProgress })
+    );
+
+    act(() => result.current.markScrollCompleted(0));
+    expect(onScrollProgress).toHaveBeenCalledOnce();
+    expect(onScrollProgress).toHaveBeenLastCalledWith(1);
+
+    act(() => result.current.reset());
+    act(() => result.current.markScrollCompleted(0));
+    expect(onScrollProgress).toHaveBeenCalledTimes(2);
+    expect(onScrollProgress).toHaveBeenLastCalledWith(1);
+  });
+
   it("canAcceptCurrentTab is false when requireScroll=false but minReadTimeMs not elapsed", () => {
     const timedDocs: AgreeFirstDocument[] = [
       { title: "Terms", content: null as any, url: "https://example.com/tos", minReadTimeMs: 5000 },

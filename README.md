@@ -6,7 +6,7 @@ Headless consent & terms modal for React. Tracks scroll completion across multip
 npm install agree-first
 ```
 
-**React 18+ and 19+ supported. Next.js App Router compatible.**
+**React 18 and 19 are tested in CI; SSR and hydration have smoke tests.** The package entry point is marked `"use client"` for Next.js App Router. A full Next.js application integration is not part of this test matrix.
 
 ---
 

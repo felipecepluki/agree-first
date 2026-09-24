@@ -60,6 +60,7 @@ export function useAgreeFirst({
   const [acceptedCount, setAcceptedCount] = useState(allMatch ? documents.length : 0);
   const [scrollCompleted, setScrollCompleted] = useState<Set<number>>(new Set());
   const [timeCompleted, setTimeCompleted] = useState<Set<number>>(new Set());
+  const reportedScrollCount = useRef(0);
 
   // In controlled mode, external value drives isAccepted; internal state tracks modal progress
   const isAccepted = isControlled ? (value as boolean) : internalIsAccepted;
@@ -72,6 +73,14 @@ export function useAgreeFirst({
 
   const onScrollProgressRef = useRef<((progress: number) => void) | undefined>(onScrollProgress);
   useEffect(() => { onScrollProgressRef.current = onScrollProgress; });
+
+  useEffect(() => {
+    const count = scrollCompleted.size;
+    if (count > reportedScrollCount.current) {
+      onScrollProgressRef.current?.(count / documents.length);
+    }
+    reportedScrollCount.current = count;
+  }, [scrollCompleted, documents.length]);
 
   const onDeclineRef = useRef<(() => void) | undefined>(onDecline);
   useEffect(() => { onDeclineRef.current = onDecline; });
@@ -129,10 +138,9 @@ export function useAgreeFirst({
       if (prev.has(i)) return prev;
       const next = new Set(prev);
       next.add(i);
-      onScrollProgressRef.current?.(next.size / documents.length);
       return next;
     });
-  }, [documents.length]);
+  }, []);
 
   const markTimeCompleted = useCallback((i: number) => {
     setTimeCompleted((prev) => {

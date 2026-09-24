@@ -1,5 +1,4 @@
-import { useRef, useEffect } from "react";
-import type { RefObject } from "react";
+import { useRef, useEffect, useCallback } from "react";
 
 const FOCUSABLE_SELECTORS = [
   "a[href]",
@@ -21,16 +20,19 @@ interface UseFocusTrapOptions {
 }
 
 export function useFocusTrap({ onEscape, returnFocusTo, enabled = true }: UseFocusTrapOptions = {}): {
-  containerRef: RefObject<HTMLDivElement | null>;
+  containerRef: (element: HTMLDivElement | null) => void;
 } {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerElement = useRef<HTMLDivElement | null>(null);
+  const containerRef = useCallback((element: HTMLDivElement | null) => {
+    containerElement.current = element;
+  }, []);
   // Keep ref current so the cleanup closure always has the latest value
   const returnFocusRef = useRef<HTMLElement | null>(returnFocusTo ?? null);
   returnFocusRef.current = returnFocusTo ?? null;
 
   useEffect(() => {
     if (!enabled) return;
-    const container = containerRef.current;
+    const container = containerElement.current;
     if (!container) return;
 
     const raf = requestAnimationFrame(() => {
