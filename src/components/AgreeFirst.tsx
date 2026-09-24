@@ -1,4 +1,4 @@
-import { useId, useRef, useEffect, useCallback, useState, forwardRef } from "react";
+import { Fragment, useId, useRef, useEffect, useCallback, useState, forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { useScrollCompletion } from "../hooks/useScrollCompletion";
 import { useFocusTrap } from "../hooks/useFocusTrap";
@@ -373,13 +373,15 @@ function TermsModal({
 function DefaultLabel({
   documents,
   linkClass,
+  unstyled,
 }: {
   documents: AgreeFirstDocument[];
   linkClass?: string;
+  unstyled: boolean;
 }) {
   const makeLink = (doc: AgreeFirstDocument) => (
     <a
-      className={["af-label-link", linkClass].filter(Boolean).join(" ")}
+      className={unstyled ? linkClass ?? "" : ["af-label-link", linkClass].filter(Boolean).join(" ")}
       href={doc.url}
       target="_blank"
       rel="noopener noreferrer"
@@ -394,10 +396,10 @@ function DefaultLabel({
   }
 
   const links = documents.map((doc, i) => (
-    <span key={i}>
+    <Fragment key={i}>
       {i > 0 && (i === documents.length - 1 ? " and " : ", ")}
       {makeLink(doc)}
-    </span>
+    </Fragment>
   ));
 
   return <>I agree to the {links}</>;
@@ -447,6 +449,7 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
     ref
   ) {
     const cls = mkCls(unstyled);
+    const simpleFlow = documents.every((doc) => !("content" in doc));
 
     // strings object overrides individual props
     const resolvedAcceptText = strings?.acceptText ?? acceptText;
@@ -528,7 +531,7 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isModalOpen]);
 
-    const modal = renderedOpen ? (
+    const modal = !simpleFlow && renderedOpen ? (
       <TermsModal
         documents={documents}
         modalTitle={resolvedModalTitle}
@@ -611,20 +614,24 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
               className={cls("af-checkbox", classNames.checkbox)}
               checked={isAccepted}
               onChange={(e) => {
-                if (e.target.checked) handleOpenModal();
+                if (e.target.checked) {
+                  if (simpleFlow) submit();
+                  else handleOpenModal();
+                }
               }}
             />
             <span
               className={cls("af-label", classNames.label)}
               onClick={(e) => {
                 if ((e.target as HTMLElement).tagName === "A") return;
-                handleOpenModal();
+                if (!simpleFlow) handleOpenModal();
               }}
             >
               {label ?? (
                 <DefaultLabel
                   documents={documents}
                   linkClass={classNames.labelLink}
+                  unstyled={unstyled}
                 />
               )}
             </span>
@@ -636,7 +643,9 @@ export const AgreeFirst = forwardRef<HTMLInputElement, AgreeFirstProps>(
             className={cls("af-button", classNames.button)}
             onClick={() => {
               // When requireCheckbox=false, button opens modal until accepted, then submits
-              if (!requireCheckbox && !isAccepted) handleOpenModal();
+              // In the simple flow, the checkbox already recorded acceptance.
+              if (simpleFlow && requireCheckbox) return;
+              if (!simpleFlow && !requireCheckbox && !isAccepted) handleOpenModal();
               else submit();
             }}
             disabled={requireCheckbox ? !canSubmit : false}

@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Position the package as a small library for versioned React agreement flows; scroll and minimum-time gates remain optional review tools, not proof of reading.
+- Add a link-only agreement flow: omit `content` from every document to record acceptance directly from the checkbox or `submit()` in a custom UI. Existing documents with `content` keep their review-modal behavior and default scroll gate.
+- Reject mixed link-only/review document lists and `minReadTimeMs` without review content, so review requirements cannot be silently skipped.
+- Treat incomplete previous or stored payloads as non-matching instead of allowing malformed data to crash version matching.
+- Read browser-local records after hydration, avoiding a checked-state mismatch for returning users in server-rendered apps.
+- Clear `needsReAcceptance` once the current documents have been accepted, even when the previous record is outdated.
+- Keep the default checkbox's accessible name properly spaced across multiple document links; remove its default link class in `unstyled` mode.
+- Document URL/version comparison, re-acceptance, local storage limits, and acceptance-payload semantics; update npm description and keywords.
+
 ## [0.1.0] — 2026-05-11
 
 ### Features

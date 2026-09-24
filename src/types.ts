@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 
 export interface AgreeFirstDocument {
   title: string;
-  content: ReactNode;
+  /** Omit for a link-only agreement; provide for the optional modal review flow. */
+  content?: ReactNode;
   url: string;
   version?: string;
   type?: "terms" | "privacy" | "policy" | "custom";

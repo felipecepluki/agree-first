@@ -16,6 +16,10 @@ const element = () => (
   </AgreeFirst>
 );
 
+const simpleElement = () => (
+  <AgreeFirst documents={[{ title: "Terms", url: "/terms", version: "1.0" }]} storageKey="ssr-simple" />
+);
+
 function renderWithoutBrowser() {
   vi.stubGlobal("window", undefined);
   vi.stubGlobal("document", undefined);
@@ -57,6 +61,73 @@ describe("AgreeFirst React compatibility", () => {
       fireEvent.click(within(container).getByRole("button", { name: "Open" }));
       expect(await screen.findByRole("dialog", { name: "Terms" })).toBeInTheDocument();
       expect(recoverableErrors).toEqual([]);
+    } finally {
+      await act(async () => root?.unmount());
+      container.remove();
+    }
+  });
+
+  it("server-renders and hydrates the link-only flow without a recoverable error", async () => {
+    vi.stubGlobal("window", undefined);
+    vi.stubGlobal("document", undefined);
+    let markup: string;
+    try {
+      markup = renderToString(simpleElement());
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    const container = document.createElement("div");
+    container.innerHTML = markup;
+    document.body.appendChild(container);
+    const recoverableErrors: unknown[] = [];
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, simpleElement(), {
+          onRecoverableError: (error) => recoverableErrors.push(error),
+        });
+      });
+      expect(recoverableErrors).toEqual([]);
+      expect(within(container).getByRole("checkbox", { name: "I agree to the Terms" })).toBeInTheDocument();
+      expect(recoverableErrors).toEqual([]);
+    } finally {
+      await act(async () => root?.unmount());
+      container.remove();
+    }
+  });
+
+  it("hydrates a returning link-only agreement with a matching local record", async () => {
+    vi.stubGlobal("window", undefined);
+    vi.stubGlobal("document", undefined);
+    let markup: string;
+    try {
+      markup = renderToString(simpleElement());
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    localStorage.setItem("ssr-simple", JSON.stringify({
+      id: "previous",
+      timestamp: "2026-09-20T12:00:00.000Z",
+      documents: [{ title: "Terms", url: "/terms", version: "1.0" }],
+      scrollCompleted: [],
+    }));
+    const container = document.createElement("div");
+    container.innerHTML = markup;
+    document.body.appendChild(container);
+    const recoverableErrors: unknown[] = [];
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+
+    try {
+      await act(async () => {
+        root = hydrateRoot(container, simpleElement(), {
+          onRecoverableError: (error) => recoverableErrors.push(error),
+        });
+      });
+      expect(recoverableErrors).toEqual([]);
+      expect(within(container).getByRole("checkbox")).toBeChecked();
     } finally {
       await act(async () => root?.unmount());
       container.remove();

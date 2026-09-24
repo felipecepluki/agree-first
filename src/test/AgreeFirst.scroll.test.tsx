@@ -85,6 +85,26 @@ describe("AgreeFirst scroll flow", () => {
     expect(acceptButton).toBeEnabled();
   });
 
+  it("preserves review progress when the modal is closed and reopened", async () => {
+    render(<AgreeFirst documents={DOCUMENTS} requireCheckbox={false}>Continue</AgreeFirst>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    const dialog = await screen.findByRole("dialog");
+    const firstPanel = within(dialog).getByRole("tabpanel");
+    setScrollTop(firstPanel, 791);
+    fireEvent.scroll(firstPanel);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Accept & Continue →" }));
+
+    expect(within(dialog).getByRole("tab", { name: "Privacy" })).toHaveAttribute("aria-selected", "true");
+    fireEvent.keyDown(dialog, { key: "Escape" });
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+    const reopened = await screen.findByRole("dialog");
+    expect(within(reopened).getByRole("tab", { name: "Terms" })).toHaveTextContent("Terms");
+    expect(within(reopened).getByRole("tab", { name: "Privacy" })).toHaveAttribute("aria-selected", "true");
+    expect(within(reopened).getByRole("button", { name: "I Accept" })).toBeDisabled();
+  });
+
   it("keeps the tab announcement hidden without the default stylesheet", async () => {
     render(
       <AgreeFirst documents={DOCUMENTS} requireCheckbox={false} requireScroll={false} unstyled classNames={{ modalFooter: "custom-footer" }}>

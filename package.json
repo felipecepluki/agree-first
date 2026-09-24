@@ -2,7 +2,7 @@
   "name": "agree-first",
   "version": "0.1.0",
   "type": "commonjs",
-  "description": "Headless React consent and terms modal that tracks scroll completion and generates timestamped consent payloads",
+  "description": "Versioned agreement flows for React with re-acceptance, multiple documents, and optional review",
   "license": "MIT",
   "author": "Felipe Cepluki",
   "repository": {
@@ -18,16 +18,15 @@
   },
   "keywords": [
     "react",
-    "terms",
-    "consent",
-    "gdpr",
-    "lgpd",
-    "modal",
+    "typescript",
+    "agreements",
     "terms-of-service",
     "privacy-policy",
+    "versioning",
+    "reacceptance",
     "headless",
-    "agreement",
-    "consent-management"
+    "consent",
+    "react-library"
   ],
   "sideEffects": [
     "*.css",

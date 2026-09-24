@@ -5,10 +5,17 @@ function generateConsentId() {
   return `c_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function matchesPrevious(docs: AgreeFirstDocument[], prev?: AcceptPayload): boolean {
-  if (!prev || docs.length === 0) return false;
+function matchesPrevious(docs: AgreeFirstDocument[], prev: unknown): boolean {
+  if (!prev || typeof prev !== "object" || docs.length === 0) return false;
+  const payload = prev as Partial<AcceptPayload>;
+  if (
+    typeof payload.id !== "string" || !payload.id ||
+    typeof payload.timestamp !== "string" || !payload.timestamp ||
+    !Array.isArray(payload.documents) ||
+    !Array.isArray(payload.scrollCompleted)
+  ) return false;
   return docs.every((doc) => {
-    const prevDoc = prev.documents.find((d) => d.url === doc.url);
+    const prevDoc = payload.documents!.find((d) => d && typeof d.url === "string" && d.url === doc.url);
     return prevDoc !== undefined && prevDoc.version === doc.version;
   });
 }
@@ -44,15 +51,18 @@ export function useAgreeFirst({
 }: UseAgreeFirstOptions) {
   const isControlled = value !== undefined;
 
-  // useState initializer runs exactly once on mount — correct semantic for reading
-  // external storage. useMemo with [] is not guaranteed to run only once by React.
-  const [storedPayload] = useState<AcceptPayload | undefined>(() => {
-    if (!storageKey || previousPayload || typeof window === "undefined") return undefined;
-    return readStorage(storageKey);
-  });
+  // Read browser-only storage after hydration so server and first client markup match.
+  const [storedPayload, setStoredPayload] = useState<AcceptPayload | undefined>();
+  useEffect(() => {
+    if (!storageKey || previousPayload) return;
+    setStoredPayload(readStorage(storageKey));
+  // Storage is an initial source of truth; changing the key requires a remount.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const effectivePayload = previousPayload ?? storedPayload;
   const allMatch = matchesPrevious(documents, effectivePayload);
+  const simpleFlow = documents.every((doc) => !("content" in doc));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [internalIsAccepted, setInternalIsAccepted] = useState(allMatch);
@@ -93,9 +103,25 @@ export function useAgreeFirst({
 
   const pendingPayload = useRef<AcceptPayload | null>(null);
 
+  useEffect(() => {
+    if (!previousPayload && storedPayload && allMatch) {
+      pendingPayload.current = storedPayload;
+      setInternalIsAccepted(true);
+      setAcceptedCount(documents.length);
+    }
+  // Storage is read once on mount; later document changes require a remount.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedPayload]);
+
   // Validate after all hooks so hook count stays consistent across renders
   if (documents.length === 0) {
     throw new Error("[agree-first] documents must not be empty");
+  }
+  if (!simpleFlow && documents.some((doc) => !("content" in doc))) {
+    throw new Error("[agree-first] provide content for every document in a review flow, or omit it for every document in a simple agreement");
+  }
+  if (simpleFlow && documents.some((doc) => doc.minReadTimeMs !== undefined)) {
+    throw new Error("[agree-first] minReadTimeMs requires document content");
   }
 
   useEffect(() => {
@@ -120,9 +146,10 @@ export function useAgreeFirst({
   });
 
   const openModal = useCallback(() => {
+    if (simpleFlow) return;
     setIsModalOpen(true);
     onOpenRef.current?.();
-  }, []);
+  }, [simpleFlow]);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -170,44 +197,54 @@ export function useAgreeFirst({
     [acceptedCount]
   );
 
+  const finishAcceptance = useCallback((): AcceptPayload => {
+    const payload: AcceptPayload = {
+      id: consentId ?? generateConsentId(),
+      timestamp: new Date().toISOString(),
+      documents: documents.map((d: AgreeFirstDocument) => ({
+        title: d.title,
+        url: d.url,
+        ...(d.version !== undefined ? { version: d.version } : {}),
+        ...(d.type !== undefined ? { type: d.type } : {}),
+      })),
+      scrollCompleted: Array.from(scrollCompleted),
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+    };
+    pendingPayload.current = payload;
+    setAcceptedCount(documents.length);
+
+    if (storageKey && typeof window !== "undefined") {
+      writeStorage(storageKey, payload);
+    }
+
+    if (!isControlled) setInternalIsAccepted(true);
+    onChangeRef.current?.(true);  // notify form library
+    onBlurRef.current?.();         // acceptance marks the field as touched
+
+    setIsModalOpen(false);
+    return payload;
+  }, [documents, scrollCompleted, consentId, storageKey, isControlled]);
+
   const acceptTab = useCallback(() => {
-    if (!canAcceptCurrentTab) return;
+    if (simpleFlow || !canAcceptCurrentTab) return;
 
     const nextCount = acceptedCount + 1;
     setAcceptedCount(nextCount);
 
     if (nextCount === documents.length) {
-      const payload: AcceptPayload = {
-        id: consentId ?? generateConsentId(),
-        timestamp: new Date().toISOString(),
-        documents: documents.map((d: AgreeFirstDocument) => ({
-          title: d.title,
-          url: d.url,
-          ...(d.version !== undefined ? { version: d.version } : {}),
-          ...(d.type !== undefined ? { type: d.type } : {}),
-        })),
-        scrollCompleted: Array.from(scrollCompleted),
-        userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
-      };
-      pendingPayload.current = payload;
-
-      if (storageKey && typeof window !== "undefined") {
-        writeStorage(storageKey, payload);
-      }
-
-      if (!isControlled) setInternalIsAccepted(true);
-      onChangeRef.current?.(true);  // notify form library
-      onBlurRef.current?.();         // modal closing — mark as touched
-
-      setIsModalOpen(false);
+      finishAcceptance();
     } else {
       setActiveTab(nextCount);
     }
-  }, [canAcceptCurrentTab, acceptedCount, documents, scrollCompleted, activeTab, consentId, storageKey, isControlled]);
+  }, [simpleFlow, canAcceptCurrentTab, acceptedCount, documents.length, finishAcceptance]);
 
   const submit = useCallback(() => {
+    if (simpleFlow && !pendingPayload.current) {
+      onAcceptRef.current?.(finishAcceptance());
+      return;
+    }
     onAcceptRef.current?.(pendingPayload.current ?? undefined);
-  }, []);
+  }, [simpleFlow, finishAcceptance]);
 
   const getPayload = useCallback(() => pendingPayload.current, []);
 
@@ -225,7 +262,7 @@ export function useAgreeFirst({
   }, []);
 
   const scrollProgress = scrollCompleted.size / documents.length;
-  const needsReAcceptance = !!effectivePayload && !allMatch;
+  const needsReAcceptance = !!effectivePayload && !allMatch && !pendingPayload.current;
 
   return {
     isModalOpen,
