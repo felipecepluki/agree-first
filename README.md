@@ -553,6 +553,16 @@ import { AgreeFirst } from "agree-first";
 
 ---
 
+## Size baseline
+
+After `npm run build`, run `npm run size:report` to measure the built JavaScript, optional CSS, and estimated npm package size. CI prints the same report on every push and pull request. The package-size estimate includes both JavaScript formats, source maps, types, CSS, and documentation; it is not the amount a browser downloads.
+
+Baseline for version 0.1.0: ESM JavaScript **12.13 KiB raw / 4.70 KiB gzip**; optional CSS **7.75 KiB raw / 2.06 KiB gzip**; npm tarball **about 53 KiB** (14 files). React and React DOM are peer dependencies, not included in these bundles. Gzip values are estimates for individual files, not a measurement of an app's final bundle.
+
+For now these numbers are informational, not CI limits. Compare future reports with this baseline; after one or two more measurements, consider a moderate threshold if it would catch meaningful regressions without blocking harmless changes.
+
+---
+
 ## License
 
 MIT © Felipe Cepluki

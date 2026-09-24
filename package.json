@@ -58,6 +58,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "size:report": "node scripts/report-size.mjs",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
