@@ -194,12 +194,20 @@ function TermsModal({
 
   const uid = useId().replace(/:/g, "");
   const cls = mkCls(unstyled);
+  const previousActiveTab = useRef(activeTab);
   const isLastTab = activeTab === documents.length - 1;
   const hasTabs = documents.length > 1;
   const activeDocument = documents[activeTab];
   const activeDocumentHeading = `${activeDocument.title} — ${formatDocumentPosition(activeTab + 1, documents.length)}`;
 
   const { containerRef } = useFocusTrap({ onEscape: onClose, returnFocusTo, enabled: mounted });
+
+  useEffect(() => {
+    if (previousActiveTab.current !== activeTab) {
+      document.getElementById(`${uid}-tab-${activeTab}`)?.focus();
+      previousActiveTab.current = activeTab;
+    }
+  }, [activeTab, uid]);
 
   useEffect(() => {
     const prev = document.body.style.overflow;

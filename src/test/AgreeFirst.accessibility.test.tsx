@@ -90,6 +90,23 @@ describe("AgreeFirst accessibility and keyboard behavior", () => {
     expect(cookies).toBeDisabled();
   });
 
+  it("moves focus to the next tab after accepting a document, so Escape still closes the dialog", async () => {
+    render(<AgreeFirst documents={documents} requireCheckbox={false} requireScroll={false}>Open</AgreeFirst>);
+    const { trigger, dialog } = await openDialog();
+    const continueButton = within(dialog).getByRole("button", { name: "Accept & Continue →" });
+    continueButton.focus();
+    fireEvent.click(continueButton);
+
+    const privacy = within(dialog).getByRole("tab", { name: "Privacy" });
+    await waitFor(() => expect(privacy).toHaveFocus());
+
+    vi.useFakeTimers();
+    fireEvent.keyDown(privacy, { key: "Escape" });
+    finishClose();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+  });
+
   it("traps Tab and Shift+Tab at the dialog boundaries", async () => {
     render(<AgreeFirst documents={documents} requireCheckbox={false} requireScroll={false}>Open</AgreeFirst>);
     const { dialog } = await openDialog();
