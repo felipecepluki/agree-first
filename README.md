@@ -63,9 +63,9 @@ Current document:   /terms version 1.4
 Result:             acceptance required again
 ```
 
-Adding a document or changing its URL/version requires re-acceptance. Removing one does **not**: the current set is checked against the old record, and extra old documents are ignored. Order and title changes do not matter. Use a stable, distinct URL for each document in a flow. If both records omit `version`, they match indefinitely for the same URL; supply and update a version whenever document changes should trigger re-acceptance. Comparison is based on declared metadata, not on fetching or hashing URL content.
+Adding a document or changing its URL/version requires re-acceptance. Removing one does **not**: the current set is checked against the old record, and extra old documents are ignored. Order and title changes do not matter. Each document **must have a stable, unique URL within the flow**: URL is its identity for matching, so two entries with the same URL cannot be distinguished reliably, even if their titles or versions differ. If both records omit `version`, they match indefinitely for the same URL; supply and update a version whenever document changes should trigger re-acceptance. Comparison is based on declared metadata, not on fetching or hashing URL content.
 
-`previousPayload` takes precedence over `storageKey` when both are provided. Invalid or unavailable local storage never grants acceptance. The initial accepted state is read on mount; if your application's document list or previous record changes later, remount the component with a new `key` for a fresh flow. `reset()` clears in-memory progress, not the stored or server-side record.
+`previousPayload` takes precedence over `storageKey` when both are provided. Invalid or unavailable local storage never grants acceptance. The initial accepted state is read on mount; if your application's document URLs/versions, previous record, or `storageKey` change later, remount the component with a new `key` derived from those inputs. Changing props in place does not restart an accepted flow. In controlled mode, also reset the parent's `value` to `false` when the current documents require re-acceptance; a new `key` cannot override a `value={true}` supplied by the parent. `reset()` clears in-memory progress, not the stored or server-side record.
 
 ---
 
@@ -203,7 +203,9 @@ import { Field } from "react-final-form";
 </Field>
 ```
 
-When `value` changes from `true` to `false` (e.g. `form.reset()`), `agree-first` resets its in-memory progress. It does not delete a prior stored/server-side agreement record.
+In controlled mode, the parent owns the checkbox state: update `value` promptly from `onChange`, and do asynchronous server persistence in `onAccept`. If the parent delays updating `value`, the checkbox remains unchecked until that update; repeated clicks during the delay do not emit duplicate `onAccept` calls in the simple flow. The package does not provide a loading or server-retry state. `storageKey`, when supplied, is written at acceptance time rather than after a server response.
+
+When `value` changes from `true` to `false` (e.g. `form.reset()`), `agree-first` resets its in-memory progress and a new acceptance can be recorded. This is a form reset, **not** a revocation workflow; it does not delete a prior stored/server-side agreement record.
 
 ---
 

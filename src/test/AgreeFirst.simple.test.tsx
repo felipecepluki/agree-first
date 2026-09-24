@@ -1,6 +1,6 @@
-import { StrictMode } from "react";
+import { StrictMode, useState } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { AgreeFirst } from "../components/AgreeFirst";
 import type { AcceptPayload, AgreeFirstDocument } from "../types";
 
@@ -107,6 +107,42 @@ describe("AgreeFirst simple agreement", () => {
     expect((JSON.parse(localStorage.getItem("agreement")!) as AcceptPayload).documents[0].version).toBe("1.3");
   });
 
+  it("requires a fresh acceptance when document metadata changes and the consumer remounts with a new key", () => {
+    const onAccept = vi.fn();
+    localStorage.setItem("agreement", JSON.stringify({
+      id: "previous",
+      timestamp: "2026-09-20T12:00:00.000Z",
+      documents: documents.map(({ title, url, version }) => ({ title, url, version })),
+      scrollCompleted: [],
+    }));
+
+    function VersionedAgreement() {
+      const [version, setVersion] = useState("1.3");
+      return (
+        <>
+          <button onClick={() => setVersion("1.4")}>Publish new terms version</button>
+          <AgreeFirst
+            key={version}
+            documents={[{ ...documents[0], version }, documents[1]]}
+            storageKey="agreement"
+            onAccept={onAccept}
+          />
+        </>
+      );
+    }
+
+    render(<VersionedAgreement />);
+    const checkbox = screen.getByRole("checkbox");
+    expect(checkbox).toBeChecked();
+
+    fireEvent.click(screen.getByRole("button", { name: "Publish new terms version" }));
+    const updatedCheckbox = screen.getByRole("checkbox");
+    expect(updatedCheckbox).not.toBeChecked();
+    fireEvent.click(updatedCheckbox);
+    expect((onAccept.mock.calls[0][0] as AcceptPayload).documents[0].version).toBe("1.4");
+    expect((JSON.parse(localStorage.getItem("agreement")!) as AcceptPayload).documents[0].version).toBe("1.4");
+  });
+
   it("lets a custom render prop accept a URL-only agreement using submit", () => {
     const onAccept = vi.fn();
     render(
@@ -128,6 +164,9 @@ describe("AgreeFirst simple agreement", () => {
     expect(screen.getByText("2")).toBeInTheDocument();
     expect(onAccept).toHaveBeenCalledOnce();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Accepted" }));
+    expect(onAccept).toHaveBeenCalledOnce();
   });
 
   it("keeps the simple flow controlled and calls onAccept once in Strict Mode", () => {
@@ -149,6 +188,47 @@ describe("AgreeFirst simple agreement", () => {
       </StrictMode>
     );
     expect(screen.getByRole("checkbox")).toBeChecked();
+  });
+
+  it("does not repeat acceptance while a controlled parent updates asynchronously", () => {
+    vi.useFakeTimers();
+    const onAccept = vi.fn();
+
+    function DelayedControlledAgreement() {
+      const [accepted, setAccepted] = useState(false);
+      return (
+        <>
+          <AgreeFirst
+            documents={documents}
+            value={accepted}
+            onChange={(next) => setTimeout(() => setAccepted(next), 100)}
+            onAccept={onAccept}
+          />
+          <button onClick={() => setAccepted(false)}>Reset form value</button>
+        </>
+      );
+    }
+
+    try {
+      render(<DelayedControlledAgreement />);
+      const checkbox = screen.getByRole("checkbox");
+      fireEvent.click(checkbox);
+      expect(checkbox).not.toBeChecked();
+      expect(onAccept).toHaveBeenCalledOnce();
+
+      fireEvent.click(checkbox);
+      expect(onAccept).toHaveBeenCalledOnce();
+
+      act(() => vi.advanceTimersByTime(100));
+      expect(checkbox).toBeChecked();
+
+      fireEvent.click(screen.getByRole("button", { name: "Reset form value" }));
+      expect(checkbox).not.toBeChecked();
+      fireEvent.click(checkbox);
+      expect(onAccept).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("keeps a supplied content document in the existing review flow", async () => {

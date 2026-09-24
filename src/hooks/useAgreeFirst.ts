@@ -102,6 +102,7 @@ export function useAgreeFirst({
   useEffect(() => { onBlurRef.current = onBlur; });
 
   const pendingPayload = useRef<AcceptPayload | null>(null);
+  const simpleAcceptanceEmitted = useRef(false);
 
   useEffect(() => {
     if (!previousPayload && storedPayload && allMatch) {
@@ -141,6 +142,7 @@ export function useAgreeFirst({
       setScrollCompleted(new Set());
       setTimeCompleted(new Set());
       pendingPayload.current = null;
+      simpleAcceptanceEmitted.current = false;
     }
     prevValueRef.current = value;
   });
@@ -239,8 +241,11 @@ export function useAgreeFirst({
   }, [simpleFlow, canAcceptCurrentTab, acceptedCount, documents.length, finishAcceptance]);
 
   const submit = useCallback(() => {
-    if (simpleFlow && !pendingPayload.current) {
-      onAcceptRef.current?.(finishAcceptance());
+    if (simpleFlow) {
+      if (simpleAcceptanceEmitted.current) return;
+      const payload = pendingPayload.current ?? finishAcceptance();
+      simpleAcceptanceEmitted.current = true;
+      onAcceptRef.current?.(payload);
       return;
     }
     onAcceptRef.current?.(pendingPayload.current ?? undefined);
@@ -258,6 +263,7 @@ export function useAgreeFirst({
     setScrollCompleted(new Set());
     setTimeCompleted(new Set());
     pendingPayload.current = null;
+    simpleAcceptanceEmitted.current = false;
     onChangeRef.current?.(false); // notify form library of reset
   }, []);
 

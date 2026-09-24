@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Clear `needsReAcceptance` once the current documents have been accepted, even when the previous record is outdated.
 - Keep the default checkbox's accessible name properly spaced across multiple document links; remove its default link class in `unstyled` mode.
 - Document URL/version comparison, re-acceptance, local storage limits, and acceptance-payload semantics; update npm description and keywords.
+- Avoid duplicate `onAccept` calls in the simple flow while a controlled parent applies its value asynchronously; clarify that document URLs must be unique and metadata changes require remounting with a new key.
 
 ## [0.1.0] — 2026-05-11
 
