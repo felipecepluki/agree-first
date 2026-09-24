@@ -10,6 +10,8 @@ Also works with `pnpm add agree-first`, `yarn add agree-first`, or `bun add agre
 
 React 18 and 19 are tested in CI. SSR and hydration have smoke tests; the package entry point is marked `"use client"` for Next.js App Router. A full Next.js application integration is not part of this test matrix.
 
+To try both flows in a browser without publishing, use the [local Vite playground](https://github.com/felipecepluki/agree-first/tree/main/apps/playground).
+
 ---
 
 ## Why agree-first?

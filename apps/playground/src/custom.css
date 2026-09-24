@@ -1,0 +1,70 @@
+:root { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #f0f3fb; background: #0d1424; font-synthesis: none; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+body { min-width: 320px; margin: 0; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+.custom-page { max-width: 1040px; margin: 0 auto; padding: 0 24px 65px; }
+.custom-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 74px; border-bottom: 1px solid #26344b; font-size: 13px; color: #aeb9ce; }
+.custom-nav a { color: #c8baff; text-decoration: none; }
+.custom-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.custom-hero { max-width: 750px; padding: 76px 0 52px; }
+.custom-eyebrow { margin: 0 0 15px; color: #ae9fff; font-size: 12px; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+.custom-hero h1 { margin: 0 0 23px; font-size: clamp(39px, 6vw, 67px); line-height: 1.06; letter-spacing: -.06em; }
+.custom-hero > p:not(.custom-eyebrow) { max-width: 650px; color: #abb8cb; font-size: 17px; line-height: 1.7; }
+.custom-hero code { color: #d7cbff; background: #26304a; border-radius: 5px; padding: 2px 5px; font-size: .9em; }
+.custom-card { margin-top: 20px; padding: 30px; border: 1px solid #34425b; border-radius: 18px; background: #1a263a; }
+.custom-card-header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.custom-card h2 { margin: 0; font-size: 23px; letter-spacing: -.035em; }
+.custom-card > p { color: #aab7ca; line-height: 1.6; }
+.custom-pill { padding: 5px 9px; border: 1px solid #665bb7; border-radius: 99px; color: #c4b9ff; font-size: 11px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
+.custom-field { display: flex; flex-direction: column; gap: 22px; padding: 20px 0 4px; }
+.custom-checkbox-row { display: inline-flex; align-items: flex-start; gap: 11px; cursor: pointer; line-height: 1.6; }
+.custom-checkbox { flex: 0 0 auto; width: 19px; height: 19px; margin: 3px 0 0; accent-color: #9d8cff; }
+.custom-label { color: #e1e7f3; }
+.custom-label-link, .custom-doc-link { color: #c7baff; text-underline-offset: 5px; }
+.custom-label-link:hover, .custom-doc-link:hover { color: #e3daff; }
+.custom-action, .custom-accept-button { align-self: flex-start; padding: 10px 18px; border: 0; border-radius: 9px; background: #9d8cff; color: #101324; font-weight: 750; }
+.custom-action:hover:not(:disabled), .custom-accept-button:hover:not(:disabled) { background: #b3a5ff; }
+.custom-action:disabled, .custom-accept-button:disabled { opacity: .45; cursor: not-allowed; }
+.custom-record pre { overflow: auto; margin: 19px 0 0; padding: 16px; border-radius: 10px; background: #0f192b; color: #b7c8e3; font: 12px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+.custom-disclaimer { margin: 26px 0 0; color: #7f8da3; font-size: 12px; }
+
+/* These are consumer-owned classes. No agree-first CSS is loaded on this page. */
+.custom-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 18px; background: rgba(3, 8, 19, .76); backdrop-filter: blur(7px); }
+.custom-modal { width: min(100%, 790px); max-height: min(90dvh, 850px); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #45536b; border-radius: 18px; background: #1b283b; color: #f4f6fb; box-shadow: 0 30px 90px rgba(0, 0, 0, .45); }
+.custom-modal-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 19px 24px; border-bottom: 1px solid #3c4b62; }
+.custom-modal-title { font-size: 17px; font-weight: 750; }
+.custom-modal-close { display: grid; place-items: center; flex: 0 0 auto; width: 40px; height: 40px; padding: 9px; border: 0; border-radius: 8px; background: transparent; color: #b8c5d6; }
+.custom-modal-close:hover { color: #fff; background: #293a52; }
+.custom-modal-close svg { width: 21px; height: 21px; }
+.custom-tabs { display: flex; padding: 0 24px; border-bottom: 1px solid #3c4b62; }
+.custom-tab { flex: 1 1 0; min-width: 0; padding: 14px 10px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent; color: #aab8cb; font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.custom-tab:disabled { opacity: .4; cursor: not-allowed; }
+.custom-tab-active { color: #e7e2ff; border-color: #a697ff; }
+.custom-tab-done { color: #71dbad; }
+.custom-scroll-area { min-height: 130px; overflow: auto; padding: 22px 24px 26px; color: #d2dbe8; line-height: 1.8; text-align: justify; scrollbar-width: thin; scrollbar-color: #64758d transparent; }
+.custom-scroll-area::-webkit-scrollbar { width: 9px; }
+.custom-scroll-area::-webkit-scrollbar-thumb { border: 2px solid #1b283b; border-radius: 9px; background: #64758d; }
+.custom-scroll-area h2 { margin: 0 0 15px; color: #fff; font-size: 23px; }
+.custom-scroll-area p { margin: 0 0 18px; }
+.custom-progress-bar { flex: 0 0 auto; height: 3px; background: #34455d; }
+.custom-progress-fill { height: 100%; background: #a697ff; transition: width .15s ease; }
+.custom-modal-footer { display: flex; align-items: center; gap: 18px; min-height: 78px; padding: 17px 24px; }
+.custom-doc-link { font-size: 13px; font-weight: 650; }
+.custom-scroll-hint { margin-left: auto; color: #a9b7ca; font-size: 12px; }
+.custom-accept-row { margin-left: auto; }
+.custom-accepted-badge { color: #71dbad; font-size: 13px; font-weight: 750; }
+.custom-modal :is(button, a):focus-visible, .custom-nav a:focus-visible, .custom-field :is(button, input, a):focus-visible { outline: 2px solid #c0b5ff; outline-offset: 3px; }
+
+@media (max-width: 650px) {
+  .custom-page { padding: 0 17px 45px; }
+  .custom-nav span { display: none; }
+  .custom-hero { padding: 56px 0 35px; }
+  .custom-card { padding: 21px; }
+  .custom-modal-header, .custom-modal-footer { padding-left: 17px; padding-right: 17px; }
+  .custom-tabs { padding: 0 17px; }
+  .custom-scroll-area { padding: 17px; text-align: start; }
+  .custom-modal-footer { flex-wrap: wrap; gap: 10px; }
+  .custom-scroll-hint { margin-left: 0; }
+  .custom-accept-row { margin-left: auto; }
+}
