@@ -338,7 +338,7 @@ function TermsModal({
             target="_blank"
             rel="noopener noreferrer"
           >
-            {readFullText} ↗
+            {readFullText}<span aria-hidden="true"> ↗</span>
           </a>
           {requireScroll && !scrollCompleted.has(activeTab) && (
             <span className={cls("af-scroll-hint", classNames.scrollHint)}>
@@ -357,7 +357,7 @@ function TermsModal({
               </button>
             ) : (
               <span className={cls("af-accepted-badge", classNames.acceptBadge)}>
-                ✓ {acceptedText}
+                <span aria-hidden="true">✓ </span>{acceptedText}
               </span>
             )}
           </div>

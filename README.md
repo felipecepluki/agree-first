@@ -239,7 +239,7 @@ On next visit, if document versions match, the user is auto-accepted. If a versi
 
 ## i18n / strings
 
-Override the modal's text in one object instead of passing individual string props:
+`strings` overrides the package's built-in modal copy and accessibility labels in one object:
 
 ```tsx
 <AgreeFirst
@@ -260,7 +260,9 @@ Override the modal's text in one object instead of passing individual string pro
 </AgreeFirst>
 ```
 
-By default, the heading follows the active document and shows its position. Set `modalTitle` for a fixed heading. Individual props (`acceptText`, `scrollHint`, etc.) still work — `strings` takes precedence when both are provided. Translate the checkbox with `label`, document names and content with `documents`, and the optional submit button with `children`.
+The modal keys are `acceptText`, `acceptedText`, `continueText`, `scrollHint`, `readFullText`, `closeText`, `tabsLabel`, `scrollProgressLabel`, `formatDocumentPosition`, and `modalTitle`. The first five change visible copy; `closeText`, `tabsLabel`, and `scrollProgressLabel` change accessible labels; `formatDocumentPosition` changes the position in the heading and tab announcement. By default, the heading follows the active document. Set `modalTitle` for a fixed heading. Individual props (`acceptText`, `scrollHint`, etc.) still work — `strings` takes precedence when both are provided.
+
+`strings` does **not** translate content supplied by the app: use `label` for the default checkbox prompt, `documents[].title` and `documents[].content` for the documents, and `children` for the optional submit button. In `render` mode, your render function owns its external UI text. The checkmark and external-link arrow are decorative symbols, not translatable words.
 
 ---
 
@@ -317,7 +319,7 @@ const DOCS = [
 | `className` | `string` | — | Extra class on the outer container (default UI). |
 | `classNames` | `AgreeFirstClassNames` | — | Override individual element classes. |
 
-`strings` also accepts `acceptedText`, `tabsLabel`, and `scrollProgressLabel`, plus `formatDocumentPosition(current, total)` for the heading and tab announcement. Document titles and content come from `documents`; the checkbox copy comes from `label`, and the optional submit button text comes from `children`.
+See [i18n / strings](#i18n--strings) for the full key list and the text supplied outside the modal.
 
 ---
 
