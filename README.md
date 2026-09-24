@@ -540,6 +540,7 @@ import { AgreeFirst } from "agree-first";
 - `Escape` closes the modal and returns focus to the trigger element
 - Tab order cycles within the modal
 - Multi-document tabs use `role="tablist"` / `role="tab"` / `role="tabpanel"`
+- On a tab, `ArrowLeft` / `ArrowRight` move between available documents (wrapping at the ends); `Home` / `End` go to the first / last available tab. Locked documents are skipped.
 - Progress bar uses `role="progressbar"` with `aria-valuenow`
 - Live region announces tab changes to screen readers
 - All interactive elements have `:focus-visible` outlines
@@ -557,7 +558,7 @@ import { AgreeFirst } from "agree-first";
 
 After `npm run build`, run `npm run size:report` to measure the built JavaScript, optional CSS, and estimated npm package size. CI prints the same report on every push and pull request. The package-size estimate includes both JavaScript formats, source maps, types, CSS, and documentation; it is not the amount a browser downloads.
 
-Baseline for version 0.1.0: ESM JavaScript **12.13 KiB raw / 4.70 KiB gzip**; optional CSS **7.75 KiB raw / 2.06 KiB gzip**; npm tarball **about 53 KiB** (14 files). React and React DOM are peer dependencies, not included in these bundles. Gzip values are estimates for individual files, not a measurement of an app's final bundle.
+Initial baseline (commit `b6266de`, version 0.1.0): ESM JavaScript **12.13 KiB raw / 4.70 KiB gzip**; optional CSS **7.75 KiB raw / 2.06 KiB gzip**; npm tarball **about 53 KiB** (14 files). React and React DOM are peer dependencies, not included in these bundles. Gzip values are estimates for individual files, not a measurement of an app's final bundle.
 
 For now these numbers are informational, not CI limits. Compare future reports with this baseline; after one or two more measurements, consider a moderate threshold if it would catch meaningful regressions without blocking harmless changes.
 

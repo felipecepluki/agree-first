@@ -199,7 +199,7 @@ function TermsModal({
   const activeDocument = documents[activeTab];
   const activeDocumentHeading = `${activeDocument.title} — ${formatDocumentPosition(activeTab + 1, documents.length)}`;
 
-  const { containerRef } = useFocusTrap({ onEscape: onClose, returnFocusTo });
+  const { containerRef } = useFocusTrap({ onEscape: onClose, returnFocusTo, enabled: mounted });
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -278,6 +278,7 @@ function TermsModal({
                   role="tab"
                   aria-selected={isActive}
                   aria-controls={isActive ? `${uid}-panel` : undefined}
+                  tabIndex={isActive ? 0 : -1}
                   disabled={!accessible}
                   className={[
                     cls("af-tab", classNames.tab),
@@ -287,6 +288,23 @@ function TermsModal({
                     .filter(Boolean)
                     .join(" ")}
                   onClick={() => accessible && setActiveTab(i)}
+                  onKeyDown={(event) => {
+                    if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+
+                    const available = documents.map((_, index) => index).filter(isTabAccessible);
+                    const position = available.indexOf(i);
+                    let nextPosition = position;
+
+                    if (event.key === "ArrowRight") nextPosition = (position + 1) % available.length;
+                    if (event.key === "ArrowLeft") nextPosition = (position - 1 + available.length) % available.length;
+                    if (event.key === "Home") nextPosition = 0;
+                    if (event.key === "End") nextPosition = available.length - 1;
+
+                    event.preventDefault();
+                    const next = available[nextPosition];
+                    setActiveTab(next);
+                    document.getElementById(`${uid}-tab-${next}`)?.focus();
+                  }}
                 >
                   {accepted && <span aria-hidden="true">✓ </span>}
                   {doc.title}

@@ -17,9 +17,10 @@ function getFocusable(container: HTMLElement): HTMLElement[] {
 interface UseFocusTrapOptions {
   onEscape?: () => void;
   returnFocusTo?: HTMLElement | null;
+  enabled?: boolean;
 }
 
-export function useFocusTrap({ onEscape, returnFocusTo }: UseFocusTrapOptions = {}): {
+export function useFocusTrap({ onEscape, returnFocusTo, enabled = true }: UseFocusTrapOptions = {}): {
   containerRef: RefObject<HTMLDivElement | null>;
 } {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -28,6 +29,7 @@ export function useFocusTrap({ onEscape, returnFocusTo }: UseFocusTrapOptions = 
   returnFocusRef.current = returnFocusTo ?? null;
 
   useEffect(() => {
+    if (!enabled) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -74,7 +76,7 @@ export function useFocusTrap({ onEscape, returnFocusTo }: UseFocusTrapOptions = 
       container.removeEventListener("keydown", handleKeyDown);
       returnFocusRef.current?.focus();
     };
-  }, [onEscape]);
+  }, [onEscape, enabled]);
 
   return { containerRef };
 }
