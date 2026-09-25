@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/why.css";
+---
+
+<BaseLayout
+  title="Why agree-first?"
+  theme="dark"
+  description="Why versioned agreement flows need more than a checkbox, and where agree-first fits."
+>
+  <div class="why-page">
+    <section class="why-hero" aria-labelledby="why-title">
+      <div class="why-wrap why-hero-inner">
+        <div class="why-hero-copy">
+          <p class="why-kicker">THE REASON THIS EXISTS <span>01 / 03</span></p>
+          <h1 id="why-title">Agreements change.<br /><span>Your flow should know.</span></h1>
+          <p>Checking a box is simple. Keeping track of which documents and versions someone accepted—and knowing when to ask again—is the work that keeps returning.</p>
+          <a class="why-primary-link" href="/docs/">Build your first flow <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="why-version-card" aria-label="Example of re-acceptance after a document version changes">
+          <div class="why-card-top"><span class="why-card-dot" aria-hidden="true"></span> THE VERSION CHANGED <span>01 — 02</span></div>
+          <div class="why-record"><small>LAST ACCEPTED</small><strong>Terms of Service <em>v1.3</em></strong><span>Recorded for this user</span></div>
+          <div class="why-card-connector" aria-hidden="true">↓</div>
+          <div class="why-record why-record-current"><small>CURRENT DOCUMENT</small><strong>Terms of Service <em>v1.4</em></strong><span>Declared by your application</span></div>
+          <div class="why-card-result"><span aria-hidden="true">↻</span><div><strong>Ask for acceptance again</strong><small>No guesswork, no stale checkbox state.</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-work why-wrap" aria-labelledby="why-work-title">
+      <div class="why-section-heading"><p class="why-kicker">WHAT YOU STOP REBUILDING <span>02 / 03</span></p><h2 id="why-work-title">The state around the checkbox.</h2><p>agree-first handles the small but consequential parts of an agreement flow, while your application stays in control of the documents and the saved record.</p></div>
+      <div class="why-work-list">
+        <div><span>01</span><h3>Know what was accepted</h3><p>Keep document URLs, declared versions, and a timestamp together in an acceptance payload.</p></div>
+        <div><span>02</span><h3>Recognize a change</h3><p>Compare current documents with a previous record. A new document or version calls for a new acceptance.</p></div>
+        <div><span>03</span><h3>Choose the experience</h3><p>Start with a checkbox and links. Add an optional review modal when the situation calls for more interaction.</p></div>
+      </div>
+    </section>
+
+    <section class="why-choice" aria-labelledby="why-choice-title">
+      <div class="why-wrap why-choice-inner">
+        <div class="why-section-heading"><p class="why-kicker">ONE LIBRARY, TWO LEVELS <span>03 / 03</span></p><h2 id="why-choice-title">Use only the flow you need.</h2></div>
+        <div class="why-choice-grid">
+          <div class="why-choice-card"><span>SIMPLE AGREEMENT</span><h3>A checkbox with memory.</h3><p>Link to your documents, collect acceptance, and ask again when a declared version changes. No mandatory modal or scroll.</p><a href="/docs/">Start with the simple flow <span aria-hidden="true">↗</span></a></div>
+          <div class="why-choice-card"><span>OPTIONAL REVIEW</span><h3>More deliberate, when needed.</h3><p>Provide document content for a modal review flow. You can require scroll completion or a minimum display time.</p><a href="/docs/review/">Explore optional review <span aria-hidden="true">↗</span></a></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-boundary why-wrap" aria-labelledby="why-boundary-title">
+      <div><p class="why-kicker">BUILT TO STAY SMALL</p><h2 id="why-boundary-title">Your documents. Your UI. Your source of truth.</h2></div>
+      <div><p>agree-first is React-first, typed, and has zero runtime dependencies. CSS is optional; you can use the default UI or render your own. Your application supplies document versions and decides where acceptance records belong.</p><p>It does not fetch legal documents, prove someone read them, or establish legal compliance. Those decisions depend on your product and context.</p><a href="/docs/versioning/">See the version-matching rules <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </div>
+</BaseLayout>

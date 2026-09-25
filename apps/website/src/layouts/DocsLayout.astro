@@ -1,0 +1,47 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import "../styles/docs.css";
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const pages = [
+  { label: "Getting started", href: "/docs/" },
+  { label: "Versioning & re-acceptance", href: "/docs/versioning/" },
+  { label: "Optional review", href: "/docs/review/" },
+  { label: "Styling & headless UI", href: "/docs/styling/" },
+  { label: "API reference", href: "/docs/api/" },
+];
+const currentIndex = pages.findIndex(({ href }) => href === Astro.url.pathname);
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <div class="docs-shell">
+    <aside class="docs-sidebar" aria-label="Documentation sections">
+      <div class="sidebar-heading">GUIDES</div>
+      <nav aria-label="Documentation navigation">
+        {pages.map((page) => (
+          <a href={page.href} aria-current={Astro.url.pathname === page.href ? "page" : undefined}>{page.label}</a>
+        ))}
+      </nav>
+      <div class="sidebar-help">
+        <span>Try it yourself</span>
+        <p>Run the local Vite playground to inspect both flows in a browser.</p>
+        <a href="https://github.com/felipecepluki/agree-first/tree/main/apps/playground">View playground source ↗</a>
+      </div>
+    </aside>
+    <article class="docs-article">
+      <div class="docs-breadcrumb"><a href="/docs/">Documentation</a><span aria-hidden="true">/</span><span>{frontmatter.title}</span></div>
+      <div class="markdown-body"><slot /></div>
+      <nav class="docs-pagination" aria-label="Documentation pagination">
+        {currentIndex > 0 && <a href={pages[currentIndex - 1].href}><small>Previous</small><span>← {pages[currentIndex - 1].label}</span></a>}
+        {currentIndex < pages.length - 1 && <a href={pages[currentIndex + 1].href}><small>Next</small><span>{pages[currentIndex + 1].label} →</span></a>}
+      </nav>
+    </article>
+  </div>
+</BaseLayout>

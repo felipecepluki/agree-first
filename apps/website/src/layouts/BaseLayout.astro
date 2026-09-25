@@ -1,0 +1,74 @@
+---
+import { Font } from "astro:assets";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  theme?: "light" | "dark";
+}
+
+const { title, description, theme = "light" } = Astro.props;
+const pageTitle = title === "agree-first" ? title : `${title} · agree-first`;
+const isDocs = Astro.url.pathname.startsWith("/docs");
+const isWhy = Astro.url.pathname.startsWith("/why");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content={theme === "dark" ? "#141323" : "#f8f9fc"} />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Font cssVariable="--font-bricolage" preload={theme === "dark"} />
+    <Font cssVariable="--font-geist" preload />
+    <title>{pageTitle}</title>
+  </head>
+  <body class:list={[theme === "dark" && "theme-dark"]}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class:list={["site-header", theme === "dark" && "is-dark"]}>
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="agree-first home">
+          <span class="brand-mark" aria-hidden="true">a<span>.</span></span>
+          <span>agree-first</span>
+        </a>
+        <nav class="header-nav" aria-label="Main navigation">
+          <a href="/docs/" aria-current={isDocs ? "page" : undefined}>Docs</a>
+          <a href="/why/" aria-current={isWhy ? "page" : undefined}>Why?</a>
+          <a class="nav-install" href="/docs/#install">Get started</a>
+          <a class="github-stars" href="https://github.com/felipecepluki/agree-first" data-github-stars aria-label="View agree-first on GitHub">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="m12 2.25 3.01 6.1 6.74.98-4.88 4.76 1.15 6.72L12 17.64l-6.02 3.17 1.15-6.72-4.88-4.76 6.74-.98L12 2.25Z" /></svg>
+            <span data-star-count>GitHub</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div>
+          <a class="footer-brand" href="/">agree-first</a>
+          <p>Small, versioned agreement flows for React.</p>
+        </div>
+        <nav aria-label="Footer navigation">
+          <a href="/docs/">Docs</a>
+          <a href="/why/">Why?</a>
+          <a href="https://github.com/felipecepluki/agree-first">GitHub</a>
+          <a href="https://www.npmjs.com/package/agree-first">npm</a>
+        </nav>
+      </div>
+      <p class="footer-note">The library records configured interactions and acceptance. It does not establish legal compliance or prove reading.</p>
+    </footer>
+    <script>
+      import { mountGitHubStars } from "../scripts/githubStars";
+
+      const starLink = document.querySelector<HTMLAnchorElement>("[data-github-stars]");
+      if (starLink) mountGitHubStars(starLink);
+    </script>
+  </body>
+</html>
