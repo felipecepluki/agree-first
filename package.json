@@ -64,7 +64,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint:package": "publint --pack false",
-    "check:package": "attw --pack . --profile node16",
+    "check:package": "npm_config_dry_run=false attw --pack . --profile node16",
     "prepublishOnly": "npm test && npm run typecheck && npm run build && npm run lint:package && npm run check:package && npm pack --dry-run"
   },
   "peerDependencies": {
