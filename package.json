@@ -1,6 +1,6 @@
 {
   "name": "agree-first",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "commonjs",
   "description": "Versioned agreement flows for React with re-acceptance, multiple documents, and optional review",
   "license": "MIT",

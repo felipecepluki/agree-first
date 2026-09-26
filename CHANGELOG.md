@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## [0.2.0] — 2026-09-26
+
 - Position the package as a small library for versioned React agreement flows; scroll and minimum-time gates remain optional review tools, not proof of reading.
 - Add a link-only agreement flow: omit `content` from every document to record acceptance directly from the checkbox or `submit()` in a custom UI. Existing documents with `content` keep their review-modal behavior and default scroll gate.
 - Reject mixed link-only/review document lists and `minReadTimeMs` without review content, so review requirements cannot be silently skipped.
