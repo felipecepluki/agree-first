@@ -7,41 +7,73 @@ interface Props {
     title: string;
     description: string;
   };
+  headings?: { depth: number; slug: string; text: string }[];
 }
 
-const { frontmatter } = Astro.props;
+const { frontmatter, headings = [] } = Astro.props;
 const pages = [
-  { label: "Getting started", href: "/docs/" },
-  { label: "Versioning & re-acceptance", href: "/docs/versioning/" },
-  { label: "Optional review", href: "/docs/review/" },
-  { label: "Styling & headless UI", href: "/docs/styling/" },
-  { label: "API reference", href: "/docs/api/" },
+  { label: "Introduction", href: "/docs/", group: "START HERE" },
+  { label: "Installation", href: "/docs/installation/", group: "START HERE" },
+  { label: "Anatomy", href: "/docs/anatomy/", group: "START HERE" },
+  { label: "Versioning & re-acceptance", href: "/docs/versioning/", group: "GUIDES" },
+  { label: "Optional review", href: "/docs/review/", group: "GUIDES" },
+  { label: "Styling & headless UI", href: "/docs/styling/", group: "GUIDES" },
+  { label: "TanStack Form", href: "/docs/tanstack-form/", group: "FORMS" },
+  { label: "React Hook Form", href: "/docs/react-hook-form/", group: "FORMS" },
+  { label: "TanStack Start", href: "/docs/tanstack-start/", group: "INTEGRATIONS" },
+  { label: "Next.js", href: "/docs/nextjs/", group: "INTEGRATIONS" },
+  { label: "Vite + React", href: "/docs/vite/", group: "INTEGRATIONS" },
+  { label: "Astro + React", href: "/docs/astro/", group: "INTEGRATIONS" },
+  { label: "RedwoodSDK", href: "/docs/redwoodsdk/", group: "INTEGRATIONS" },
+  { label: "shadcn/ui Checkbox", href: "/docs/shadcn-checkbox/", group: "EXAMPLES" },
+  { label: "HeroUI Checkbox", href: "/docs/heroui-checkbox/", group: "EXAMPLES" },
+  { label: "API reference", href: "/docs/api/", group: "REFERENCE" },
+  { label: "Troubleshooting", href: "/docs/troubleshooting/", group: "REFERENCE" },
 ];
 const currentIndex = pages.findIndex(({ href }) => href === Astro.url.pathname);
+const pageHeadings = headings.filter(({ depth }) => depth === 2);
 ---
 
-<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+<BaseLayout title={frontmatter.title} description={frontmatter.description} theme="dark">
   <div class="docs-shell">
     <aside class="docs-sidebar" aria-label="Documentation sections">
-      <div class="sidebar-heading">GUIDES</div>
       <nav aria-label="Documentation navigation">
-        {pages.map((page) => (
-          <a href={page.href} aria-current={Astro.url.pathname === page.href ? "page" : undefined}>{page.label}</a>
+        {["START HERE", "GUIDES", "FORMS", "INTEGRATIONS", "EXAMPLES", "REFERENCE"].map((group) => (
+          <div class="sidebar-group">
+            <div class="sidebar-heading">{group}</div>
+            {pages.filter((page) => page.group === group).map((page) => (
+              <a href={page.href} aria-current={Astro.url.pathname === page.href ? "page" : undefined}>{page.label}</a>
+            ))}
+          </div>
         ))}
       </nav>
       <div class="sidebar-help">
-        <span>Try it yourself</span>
-        <p>Run the local Vite playground to inspect both flows in a browser.</p>
-        <a href="https://github.com/felipecepluki/agree-first/tree/main/apps/playground">View playground source ↗</a>
+        <span>Explore the package</span>
+        <p>Run both agreement flows in the local Vite playground.</p>
+        <a href="https://github.com/felipecepluki/agree-first/tree/main/apps/playground">Open playground source <span aria-hidden="true">↗</span></a>
       </div>
     </aside>
     <article class="docs-article">
-      <div class="docs-breadcrumb"><a href="/docs/">Documentation</a><span aria-hidden="true">/</span><span>{frontmatter.title}</span></div>
+      <div class="docs-breadcrumb"><a href="/docs/">DOCS</a><span aria-hidden="true">/</span><span>{frontmatter.title}</span></div>
       <div class="markdown-body"><slot /></div>
       <nav class="docs-pagination" aria-label="Documentation pagination">
         {currentIndex > 0 && <a href={pages[currentIndex - 1].href}><small>Previous</small><span>← {pages[currentIndex - 1].label}</span></a>}
         {currentIndex < pages.length - 1 && <a href={pages[currentIndex + 1].href}><small>Next</small><span>{pages[currentIndex + 1].label} →</span></a>}
       </nav>
     </article>
+    {pageHeadings.length > 0 && (
+      <aside class="docs-toc" aria-label="On this page">
+        <div class="toc-heading">ON THIS PAGE</div>
+        <nav aria-label="Page contents">
+          {pageHeadings.map((heading) => <a href={`#${heading.slug}`}>{heading.text}</a>)}
+        </nav>
+      </aside>
+    )}
   </div>
 </BaseLayout>
+
+<script>
+  import { enhanceDocsCodeBlocks } from "../scripts/docsCodeBlocks";
+
+  enhanceDocsCodeBlocks(document);
+</script>

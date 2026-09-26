@@ -1,69 +1,33 @@
 ---
 layout: ../../layouts/DocsLayout.astro
-title: Getting started
-description: Install agree-first and build a simple versioned agreement flow in React.
+title: Introduction
+description: Understand what agree-first handles in a versioned agreement flow for React.
 ---
 
-# Getting started
+# Introduction
 
-Use a checkbox with links to your documents. `agree-first` tracks the accepted versions and gives you a record when the user accepts.
+A checkbox is easy. Remembering **which documents and versions** someone accepted—and knowing when to ask again—is the part worth sharing.
 
-## Install
+`agree-first` is a small React library for versioned agreement flows. You provide document URLs and versions; it manages the acceptance state, compares earlier records, and gives you a payload to save. React 18 and 19 are supported, and the package has no runtime dependencies.
 
-```bash
-npm install agree-first
-```
+## Two ways to use it
 
-You can also use `pnpm add agree-first`, `yarn add agree-first`, or `bun add agree-first`. React and React DOM are peer dependencies; React 18 and 19 are tested in the library's CI.
+**Simple agreement** is the usual starting point: a checkbox, links to your documents, and an acceptance callback. No modal or scroll requirement is needed.
 
-## Your first agreement
+**Optional review** adds a modal when you provide document content. You can ask the user to reach the end of each document or wait for a minimum display time. Those are interaction signals, not proof that someone read or understood the text.
 
-```tsx
-import { AgreeFirst } from "agree-first";
-import "agree-first/styles"; // optional default styling
+The two modes use the same component and payload. You do not need to adopt the review UI to get versioning and re-acceptance.
 
-const documents = [
-  { title: "Terms of Service", url: "/terms", version: "1.4" },
-  { title: "Privacy Policy", url: "/privacy", version: "2.0" },
-];
+## What the library handles
 
-function AgreementField() {
-  return (
-    <AgreeFirst
-      documents={documents}
-      onAccept={(payload) => {
-        if (payload) saveAgreement(payload);
-      }}
-    />
-  );
-}
-```
+- Multiple documents in one flow.
+- Matching current document URLs and versions against a previous acceptance.
+- An acceptance payload with a timestamp and document metadata.
+- Optional browser-local persistence, or a record supplied by your application.
+- Optional default styling, custom classes, or your own external controls.
 
-`saveAgreement` is **your application function**. You decide whether to store the payload in your backend, your form state, or elsewhere. The package does not make network requests or fetch the document URLs.
+Your application owns the legal text, chooses when a version changes, and decides where the acceptance record is stored. `agree-first` does not fetch document URLs, run a backend, revoke acceptance, or establish legal compliance.
 
-Because the documents have no `content` prop, this is the **simple agreement** flow. The default UI is a checkbox with links. Checking it calls `onAccept` immediately, without opening a modal or requiring scroll. Unchecking is not a revocation workflow.
+## Where to start
 
-> Give each document a stable, unique URL. It is the document's identity when matching an earlier record. Add a `version` and update it whenever that document changes.
-
-## Returning users
-
-Pass a saved `AcceptPayload` back as `previousPayload`. Matching current URLs and versions start accepted; changed ones ask for acceptance again.
-
-```tsx
-<AgreeFirst
-  documents={documents}
-  previousPayload={savedPayload}
-  onAccept={(payload) => payload && saveAgreement(payload)}
-/>
-```
-
-For a browser-local record, `storageKey="my_app_agreement"` reads and writes `localStorage` instead. It is convenient, but not a secure or cross-device record. See [versioning and persistence](/docs/versioning/) for the matching rules and edge cases.
-
-## What comes next?
-
-- [Versioning & re-acceptance](/docs/versioning/) explains exactly when a new acceptance is needed.
-- [Optional review](/docs/review/) shows the modal, scrolling, and minimum display time.
-- [Styling & headless UI](/docs/styling/) shows how to use your own design system.
-- [API reference](/docs/api/) lists the props and payload shape.
-
-The package records the interaction and acceptance configured by the developer. It does not prove reading, understanding, or legal compliance.
+Go to [Installation](/docs/installation/) for the first working checkbox. Then read [Anatomy](/docs/anatomy/) to see how documents, versions, and records fit together. The [versioning guide](/docs/versioning/) covers the matching rules in detail. For a larger form, see [TanStack Form](/docs/tanstack-form/) or [React Hook Form](/docs/react-hook-form/). Framework examples are available for [TanStack Start](/docs/tanstack-start/), [Next.js](/docs/nextjs/), [Vite + React](/docs/vite/), [Astro + React](/docs/astro/), and [RedwoodSDK](/docs/redwoodsdk/). To replace the default checkbox with your own UI, see the [shadcn/ui](/docs/shadcn-checkbox/) and [HeroUI](/docs/heroui-checkbox/) examples.

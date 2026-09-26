@@ -79,4 +79,6 @@ The `render` prop lets you use your own checkbox and links. For link-only docume
 
 For review documents, `render` also provides `openModal()` and `canSubmit`. The package still renders its review modal; `render` replaces the external controls, not the modal's internal structure. A full modal restyle uses `unstyled` and `classNames` too.
 
+For concrete custom-checkbox examples, see [shadcn/ui Checkbox (Base UI)](/docs/shadcn-checkbox/) or [HeroUI Checkbox](/docs/heroui-checkbox/).
+
 Text can be changed with `label`, `children`, `documents[].title`/`content`, and `strings`. See [API reference](/docs/api/) for the exact overrides.

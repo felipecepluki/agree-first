@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import AgreementDemo from "../components/AgreementDemo";
+import "agree-first/styles";
 import "../styles/home.css";
 
 const exampleCode = [
@@ -32,7 +33,7 @@ const exampleCode = [
         <h1><span>Stop rebuilding</span> <span>agreement flows.</span></h1>
         <p class="hero-lead">A checkbox is easy. Tracking which documents and versions someone accepted—and when to ask again—is the part you should not have to rebuild.</p>
         <div class="hero-actions">
-          <a class="home-button home-button-primary" href="/docs/">Get started</a>
+          <a class="home-button home-button-primary" href="/docs/installation/">Get started</a>
           <div class="install-command" role="group" aria-label="Install agree-first">
             <span class="install-prompt" aria-hidden="true">$</span>
             <code>npm install agree-first</code>
@@ -44,9 +45,9 @@ const exampleCode = [
           </div>
         </div>
 
-        <div class="demo-intro"><span><i aria-hidden="true"></i> TRY THE ACTUAL PACKAGE</span><p>Change the version. Accept it. Inspect the record.</p></div>
-        <div class="hero-demo"><AgreementDemo client:load /></div>
-        <p class="hero-footnote">This example uses the simple flow—no mandatory modal. Documents and payload are samples; the demo keeps state only in this page's memory.</p>
+        <div class="demo-intro"><span><i aria-hidden="true"></i> TRY BOTH REAL FLOWS</span><p>Change a version. Open a review. Inspect the payload.</p></div>
+        <div class="hero-demo" id="demo"><AgreementDemo client:load /></div>
+        <p class="hero-footnote">The demo starts with the simple agreement. Switch to optional review to try the package modal; sample records stay only in this page's memory.</p>
       </div>
     </section>
 
@@ -66,7 +67,7 @@ const exampleCode = [
     <section class="ways-section" aria-labelledby="ways-title"><div class="home-wrap">
       <div class="section-heading centered"><p class="section-kicker">02 / TWO WAYS TO USE IT</p><h2 id="ways-title">Start simple. <span>Add review only when it helps.</span></h2><p>Both paths use the same document metadata and acceptance record. Scroll is a choice, not the reason to install the package.</p></div>
       <div class="way-grid">
-        <a class="way-card simple-way" href="/docs/">
+        <a class="way-card simple-way" href="/docs/installation/">
           <div class="way-top"><span>01</span><span>SIMPLE AGREEMENT</span></div>
           <div class="way-preview"><span class="preview-check" aria-hidden="true">✓</span><span>I agree to the <u>Terms</u> and <u>Privacy Policy</u></span></div>
           <h3>Links and a checkbox.</h3><p>Accept immediately, return a timestamped payload, and ask again when declared versions change.</p><span class="way-link">See the quick start <span aria-hidden="true">↗</span></span>
