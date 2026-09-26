@@ -4,6 +4,10 @@ title: Versioning & re-acceptance
 description: Learn how agree-first compares document URLs and versions and handles previous acceptance records.
 ---
 
+import LiveExample from "../../components/docs/LiveExample.astro";
+import VersioningExample from "../../components/docs/VersioningExample";
+import versioningCode from "../../components/docs/VersioningExample.tsx?raw";
+
 # Versioning & re-acceptance
 
 You declare document versions. `agree-first` compares the current documents with the last acceptance record and can request acceptance again when they differ.
@@ -27,6 +31,14 @@ Every **current** document must have a matching URL and version in the previous 
 | Both old and current versions omitted | Matches for the same URL, even if the text changed |
 
 Use a stable, **unique URL per document within a flow**. Two entries with the same URL cannot be distinguished reliably. The library does not fetch or hash the page behind a URL, so your application must update `version` when its document changes.
+
+## Try a version change
+
+The preview starts with a saved Terms v1.3 record. Switch to v1.4 to see the checkbox require acceptance again. Its record stays in this page's memory and is never sent to a server.
+
+<LiveExample title="Versioning & re-acceptance" code={versioningCode}>
+  <VersioningExample client:visible />
+</LiveExample>
 
 ## Choose a record source
 

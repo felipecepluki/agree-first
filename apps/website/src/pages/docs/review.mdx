@@ -4,9 +4,23 @@ title: Optional review
 description: Add an optional accessible document review modal, scroll completion, and minimum display time.
 ---
 
+import LiveExample from "../../components/docs/LiveExample.astro";
+import ReviewExample from "../../components/docs/ReviewExample";
+import reviewCode from "../../components/docs/ReviewExample.tsx?raw";
+
 # Optional review
 
 The common flow needs only links and a checkbox. If your product wants a more explicit review step, provide `content` for **every** document. That activates the built-in modal.
+
+## Try the review flow
+
+This is the published component with two application-supplied documents. Open the modal, scroll each one, activate **Complete review**, and inspect the resulting payload. Nothing is sent to a server.
+
+<LiveExample title="Two-document review" code={reviewCode}>
+  <ReviewExample client:visible />
+</LiveExample>
+
+## Add review to your app
 
 ```tsx
 const documents = [
@@ -61,6 +75,6 @@ const documents = [
 
 ## Keyboard and focus
 
-The modal exposes dialog, tab, tabpanel, and progress semantics. Its tabs support Arrow Left/Right, Home, and End. The document area supports Space, Page Up/Down, Arrow Up/Down, Home, and End when focused. Escape closes the modal, and focus returns to the opening control. Check the result with your own content and surrounding form in a real browser.
+The modal exposes dialog, tab, tabpanel, and progress semantics. Its tabs support Arrow Left/Right, Home, and End. The document area supports Space, Page Up/Down, Arrow Up/Down, Home, and End when focused. Escape closes the modal, and focus returns to the opening control. See the [Accessibility guide](/docs/accessibility/) for the full keyboard map and checks to perform with your own content.
 
 Close, reopen, mobile layout, and document switching can be tested in the [local Vite playground](https://github.com/felipecepluki/agree-first/tree/main/apps/playground). Scroll completion and display time record UI interaction only; neither proves that someone read or understood a document.

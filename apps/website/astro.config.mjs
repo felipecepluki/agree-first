@@ -1,10 +1,11 @@
 import { defineConfig, fontProviders } from "astro/config";
 import react from "@astrojs/react";
+import mdx from "@astrojs/mdx";
 
 export default defineConfig({
   output: "static",
   devToolbar: { enabled: false },
-  integrations: [react()],
+  integrations: [react(), mdx()],
   fonts: [
     {
       name: "Bricolage Grotesque",

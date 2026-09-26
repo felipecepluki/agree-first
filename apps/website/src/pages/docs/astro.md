@@ -83,4 +83,4 @@ The stylesheet import is optional and can live in a shared Astro layout if sever
 
 For the optional review modal, provide `content` for **every** document inside the React component, not as callback or render-prop values from the `.astro` page. You can then use `requireScroll` and `minReadTimeMs`. See [Optional review](/docs/review/).
 
-To test locally, run your Astro dev server, accept once, reload, and then change a document version and reload again. Acceptance should be required for the new version. The sample on this website uses the repository's local library build; installing from npm uses the version currently published there.
+To test locally, run your Astro dev server, accept once, reload, and then change a document version and reload again. Acceptance should be required for the new version. The interactive examples on this website use its pinned npm release; your application will install the version resolved by its own package manager.

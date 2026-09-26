@@ -4,11 +4,10 @@ The public-facing landing page and initial documentation for agree-first. This i
 
 ## Run locally
 
-Astro 7 requires Node 22.12 or later. The homepage demo imports the local library build. From the repository root:
+Astro 7 requires Node 22.12 or later. The site uses the published `agree-first@0.2.0` package for its live examples. From the repository root:
 
 ```bash
 npm ci
-npm run build
 cd apps/website
 npm ci
 npm run dev
@@ -19,11 +18,12 @@ Open the URL printed by Astro. `npm run check` validates Astro/TypeScript source
 ## Content
 
 - `src/pages/index.astro`: landing page.
-- `src/components/AgreementDemo.tsx`: one React island on the homepage, demonstrating the simple and optional review flows with the local built package (no npm publish needed).
-- `src/pages/docs/*.md`: documentation pages, one route per file.
+- `src/components/AgreementDemo.tsx`: React island on the homepage, demonstrating versioned re-acceptance in the simple flow with the published package. The optional review flow is explained in the docs.
+- `src/components/docs/`: interactive React examples and their Preview/Code shell for selected documentation pages.
+- `src/pages/docs/*.md` and `*.mdx`: documentation pages, one route per file.
 - `src/layouts/`: shared site shell and docs navigation.
 - `src/styles/`: site-owned CSS.
 
 Documentation code blocks adapt the MIT-licensed [Code Blocks](https://github.com/pheralb/code-blocks) component pattern to Astro's static Markdown output. The installation block offers npm, pnpm, Yarn, and Bun commands; all fenced code examples have a copy control. This site-specific enhancement uses no shadcn or Tailwind setup and does not affect the published library.
 
-The documentation pages remain static. Only the homepage demo hydrates React, via the official Astro integration; it does not persist sample acceptance beyond a page reload. The separate, more complete Vite playground remains in `apps/playground`. Before deploying the site publicly, verify that the npm release matches the local package behavior shown in the demo. When library behavior changes, update the README and matching website docs in the same change. Avoid claims of proof of reading or automatic legal compliance.
+Most documentation pages remain static. Selected MDX pages hydrate small React examples through the official Astro integration; the homepage demo also hydrates React. These site examples use the pinned npm release, while the separate Vite playground in `apps/playground` is better suited to testing unpublished library changes. When library behavior changes, update the README and matching website docs in the same change, then update the site's pinned version when a matching release exists. Avoid claims of proof of reading or automatic legal compliance.

@@ -4,6 +4,10 @@ title: Introduction
 description: Understand what agree-first handles in a versioned agreement flow for React.
 ---
 
+import LiveExample from "../../components/docs/LiveExample.astro";
+import SimpleAgreementExample from "../../components/docs/SimpleAgreementExample";
+import simpleAgreementCode from "../../components/docs/SimpleAgreementExample.tsx?raw";
+
 # Introduction
 
 A checkbox is easy. Remembering **which documents and versions** someone accepted—and knowing when to ask again—is the part worth sharing.
@@ -18,6 +22,10 @@ A checkbox is easy. Remembering **which documents and versions** someone accepte
 
 The two modes use the same component and payload. You do not need to adopt the review UI to get versioning and re-acceptance.
 
+<LiveExample title="A versioned checkbox" code={simpleAgreementCode}>
+  <SimpleAgreementExample client:visible />
+</LiveExample>
+
 ## What the library handles
 
 - Multiple documents in one flow.
@@ -26,7 +34,7 @@ The two modes use the same component and payload. You do not need to adopt the r
 - Optional browser-local persistence, or a record supplied by your application.
 - Optional default styling, custom classes, or your own external controls.
 
-Your application owns the legal text, chooses when a version changes, and decides where the acceptance record is stored. `agree-first` does not fetch document URLs, run a backend, revoke acceptance, or establish legal compliance.
+Your application owns the legal text, chooses when a version changes, and decides where the acceptance record is stored. `agree-first` does not fetch document URLs, run a backend, revoke acceptance, or establish legal compliance. If records matter to your backend, read [Security & trust](/docs/security/) before accepting client-supplied payloads.
 
 ## Where to start
 

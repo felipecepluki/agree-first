@@ -4,9 +4,17 @@ title: shadcn/ui Checkbox
 description: Use the shadcn/ui Base UI Checkbox as a custom agree-first control without changing the agreement flow or adding a package dependency.
 ---
 
+import CheckboxIntegrationPreview from "../../components/docs/CheckboxIntegrationPreview";
+
 # shadcn/ui Checkbox
 
 Use the [shadcn/ui Checkbox built on Base UI](https://ui.shadcn.com/docs/components/base/checkbox) for the visible control while `agree-first` manages document versions, re-acceptance, and the acceptance payload. This is an **application-level example**: shadcn/ui is not a dependency of `agree-first`.
+
+## Try the interaction
+
+Select the checkbox to see `agree-first` produce a versioned acceptance payload. This is a site-owned visual illustration of the shadcn-style control, **not** the generated shadcn component. The copyable integration code below uses the real component from your app.
+
+<CheckboxIntegrationPreview variant="shadcn" client:visible />
 
 ## Add the checkbox to your app
 

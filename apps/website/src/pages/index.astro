@@ -45,27 +45,37 @@ const exampleCode = [
           </div>
         </div>
 
-        <div class="demo-intro"><span><i aria-hidden="true"></i> TRY BOTH REAL FLOWS</span><p>Change a version. Open a review. Inspect the payload.</p></div>
+        <div class="demo-intro"><span><i aria-hidden="true"></i> TRY THE REAL PACKAGE</span><p>Accept once. Publish a new version. See what changes.</p></div>
         <div class="hero-demo" id="demo"><AgreementDemo client:load /></div>
-        <p class="hero-footnote">The demo starts with the simple agreement. Switch to optional review to try the package modal; sample records stay only in this page's memory.</p>
+        <p class="hero-footnote">This is the simple flow: no modal or scroll requirement. Records stay in this page's memory. <a href="/docs/review/">Explore optional review ↗</a></p>
       </div>
     </section>
 
-    <div class="proof-strip"><div class="home-wrap proof-inner"><div><strong>0</strong><span>runtime dependencies</span></div><div><strong>18 + 19</strong><span>React versions tested</span></div><div><strong>Optional</strong><span>CSS and review UI</span></div></div></div>
-
-    <section class="story-section home-wrap" aria-labelledby="story-title">
-      <div class="story-heading"><p class="section-kicker">01 / THE REPETITIVE PART</p><h2 id="story-title">A checkbox has <span>no memory.</span></h2><p>Real products need more than a Boolean. The last accepted document version matters, and the current version can change without the UI changing at all.</p></div>
-      <div class="version-story" aria-label="Example of version-based re-acceptance">
-        <div class="story-step"><span class="step-index">01</span><span class="step-content"><small>PREVIOUS RECORD</small><strong>Terms <em>v1.3</em></strong><span>Accepted on September 1</span></span><span class="step-mark" aria-hidden="true">✓</span></div>
-        <div class="story-connector" aria-hidden="true"></div>
-        <div class="story-step"><span class="step-index">02</span><span class="step-content"><small>CURRENT DOCUMENT</small><strong>Terms <em>v1.4</em></strong><span>The owner declared a new version</span></span><span class="step-mark update" aria-hidden="true">↗</span></div>
-        <div class="story-connector" aria-hidden="true"></div>
-        <div class="story-step story-outcome"><span class="step-index">03</span><span class="step-content"><small>AGREE-FIRST HANDLES</small><strong>Re-acceptance</strong><span>Request the current agreement again</span></span><span class="step-mark outcome" aria-hidden="true">↻</span></div>
+    <section class="proof-strip" aria-label="Package at a glance">
+      <div class="home-wrap proof-inner">
+        <div class="proof-card">
+          <div class="proof-card-top"><span class="proof-card-dot" aria-hidden="true"></span><span>LEAN CORE</span></div>
+          <strong>0</strong>
+          <p>runtime dependencies</p>
+          <span class="proof-card-detail">No UI stack pulled into your app.</span>
+        </div>
+        <div class="proof-card">
+          <div class="proof-card-top"><span class="proof-card-dot" aria-hidden="true"></span><span>TESTED TOGETHER</span></div>
+          <strong>18 <span>+</span> 19</strong>
+          <p>React versions</p>
+          <span class="proof-card-detail">Both versions run in the CI matrix.</span>
+        </div>
+        <div class="proof-card">
+          <div class="proof-card-top"><span class="proof-card-dot" aria-hidden="true"></span><span>YOUR CHOICE</span></div>
+          <strong>Optional</strong>
+          <p>CSS and review UI</p>
+          <span class="proof-card-detail">Start simple; add review if needed.</span>
+        </div>
       </div>
     </section>
 
     <section class="ways-section" aria-labelledby="ways-title"><div class="home-wrap">
-      <div class="section-heading centered"><p class="section-kicker">02 / TWO WAYS TO USE IT</p><h2 id="ways-title">Start simple. <span>Add review only when it helps.</span></h2><p>Both paths use the same document metadata and acceptance record. Scroll is a choice, not the reason to install the package.</p></div>
+      <div class="section-heading centered"><p class="section-kicker">01 / TWO WAYS TO USE IT</p><h2 id="ways-title">Start simple. <span>Add review only when it helps.</span></h2><p>Both paths use the same document metadata and acceptance record. Scroll is a choice, not the reason to install the package.</p></div>
       <div class="way-grid">
         <a class="way-card simple-way" href="/docs/installation/">
           <div class="way-top"><span>01</span><span>SIMPLE AGREEMENT</span></div>
@@ -81,7 +91,7 @@ const exampleCode = [
     </div></section>
 
     <section class="build-section home-wrap" aria-labelledby="build-title">
-      <div class="build-copy"><p class="section-kicker">03 / YOUR UI, YOUR RULES</p><h2 id="build-title">Own the documents.<br /><span>Keep the flow.</span></h2><p>The developer supplies URLs, versions, and where to save records; review flows can also include document content. agree-first manages matching, state, and the optional review experience. It does not fetch legal text or make compliance claims.</p><ul><li>Headless render prop or optional default styles</li><li>Local storage convenience or your own backend</li><li>Zero runtime dependencies in the library</li></ul><a class="text-link" href="/docs/styling/">Explore styling options <span aria-hidden="true">↗</span></a></div>
+      <div class="build-copy"><p class="section-kicker">02 / YOUR UI, YOUR RULES</p><h2 id="build-title">Own the documents.<br /><span>Keep the flow.</span></h2><p>The developer supplies URLs, versions, and where to save records; review flows can also include document content. agree-first manages matching, state, and the optional review experience. It does not fetch legal text or make compliance claims.</p><ul><li>Headless render prop or optional default styles</li><li>Local storage convenience or your own backend</li><li>Zero runtime dependencies in the library</li></ul><a class="text-link" href="/docs/styling/">Explore styling options <span aria-hidden="true">↗</span></a></div>
       <div class="code-card"><div class="code-top"><span class="code-dots" aria-hidden="true">● ● ●</span><span>AgreementField.tsx</span><span>TSX</span></div><pre><code>{exampleCode}</code></pre><div class="code-bottom"><span>Small API. No required backend or CSS.</span><span aria-hidden="true">↗</span></div></div>
     </section>
 
@@ -95,6 +105,18 @@ const exampleCode = [
   const hero = document.querySelector<HTMLElement>(".home-hero");
   const glowCanvas = hero?.querySelector<HTMLCanvasElement>(".hero-dots");
   if (hero && glowCanvas) mountDottedGlow(glowCanvas, hero);
+
+  const proofCards = document.querySelectorAll<HTMLElement>(".proof-card");
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.2 });
+    proofCards.forEach((card) => observer.observe(card));
+  }
 
   const copyButton = document.querySelector<HTMLButtonElement>("[data-copy-command]");
   const copyLabel = copyButton?.querySelector<HTMLElement>("[data-copy-label]");

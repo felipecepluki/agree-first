@@ -1,0 +1,42 @@
+---
+import { Code } from "astro:components";
+
+interface Props {
+  title: string;
+  code: string;
+}
+
+const { title, code } = Astro.props;
+---
+
+<section class="docs-live-example" data-live-example aria-label={title}>
+  <div class="docs-live-header">
+    <div class="docs-live-heading">
+      <span class="docs-live-indicator" aria-hidden="true"></span>
+      <span>{title}</span>
+      <small>agree-first · live</small>
+    </div>
+    <div class="docs-live-switch" role="group" aria-label={`View ${title}`}>
+      <button type="button" data-live-view="preview" aria-pressed="true">Preview</button>
+      <button type="button" data-live-view="code" aria-pressed="false">Code</button>
+    </div>
+  </div>
+  <div class="docs-live-panel docs-live-preview" data-live-panel="preview">
+    <slot />
+  </div>
+  <div class="docs-live-panel docs-live-source" data-live-panel="code" hidden>
+    <Code code={code} lang="tsx" theme="github-dark" />
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-live-example]").forEach((example) => {
+    const buttons = example.querySelectorAll<HTMLButtonElement>("[data-live-view]");
+    const panels = example.querySelectorAll<HTMLElement>("[data-live-panel]");
+    buttons.forEach((button) => button.addEventListener("click", () => {
+      const view = button.dataset.liveView;
+      buttons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      panels.forEach((panel) => { panel.hidden = panel.dataset.livePanel !== view; });
+    }));
+  });
+</script>

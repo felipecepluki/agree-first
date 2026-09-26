@@ -4,11 +4,19 @@ title: HeroUI Checkbox
 description: Use the HeroUI v3 Checkbox as a custom agree-first control while keeping versioned acceptance logic in the package.
 ---
 
+import CheckboxIntegrationPreview from "../../components/docs/CheckboxIntegrationPreview";
+
 # HeroUI Checkbox
 
 Use the [HeroUI v3 Checkbox](https://heroui.com/en/docs/react/components/checkbox) as the visible control while `agree-first` manages document versions, re-acceptance, and the acceptance payload. This is an **application-level example**: HeroUI is not a dependency of `agree-first`.
 
 HeroUI v3 currently requires **React 19+ and Tailwind CSS v4**. `agree-first` itself supports React 18 and 19, but this particular example targets an app that meets HeroUI's requirements. Follow the [HeroUI quick start](https://heroui.com/en/docs/react/getting-started/quick-start) if your app is not configured yet.
+
+## Try the interaction
+
+Select the checkbox to see `agree-first` produce a versioned acceptance payload. This is a site-owned visual illustration of a HeroUI-style control, **not** a mounted HeroUI component. The copyable integration code below uses the real component in your app.
+
+<CheckboxIntegrationPreview variant="heroui" client:visible />
 
 ## Install HeroUI in your app
 
