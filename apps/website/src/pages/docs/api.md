@@ -32,7 +32,7 @@ The main export is `AgreeFirst`. It supports either link-only documents or docum
 | `onScrollProgress` | `(progress: number) => void` | — | Fraction of documents scrolled, from `0` to `1`. |
 | `closeOnOverlayClick` | `boolean` | `true` | Allow backdrop to close the modal. |
 
-Individual text props `modalTitle`, `acceptText`, `continueText`, `scrollHint`, and `readFullText` also remain available. `strings` takes precedence when both are provided. The full list of `strings` keys is in the [README](https://github.com/felipecepluki/agree-first#i18n--strings).
+Individual text props `modalTitle`, `acceptText`, `continueText`, `scrollHint`, and `readFullText` also remain available. `strings` takes precedence when both are provided. Its optional keys are `acceptText`, `acceptedText`, `continueText`, `scrollHint`, `readFullText`, `modalTitle`, `closeText`, `tabsLabel`, `scrollProgressLabel`, and `formatDocumentPosition`.
 
 ## `AgreeFirstDocument`
 
@@ -72,8 +72,8 @@ Store the payload server-side if your product needs a durable acceptance record.
 
 The `render` callback receives `isAccepted`, `isModalOpen`, `openModal()`, `closeModal()`, `canSubmit`, `submit()`, `reset()`, `scrollProgress`, `needsReAcceptance`, and `getPayload()`.
 
-`submit()` accepts immediately in the simple flow. In review flow, it calls `onAccept` after the documents have been accepted. `reset()` clears in-memory progress, not stored records. The [README](https://github.com/felipecepluki/agree-first#renderprops) includes a typed example.
+`submit()` accepts immediately in the simple flow. In review flow, it calls `onAccept` after the documents have been accepted. `reset()` clears in-memory progress, not stored records. The [styling guide](/docs/styling/#render-your-own-external-ui) shows a `render` example.
 
 ## Hooks
 
-`useAgreeFirst` exposes the underlying state machine for advanced use. `useScrollCompletion` tracks completion for a scrollable element, including non-overflowing content. Both are public exports, but the component is the simplest starting point. See the [README hook examples](https://github.com/felipecepluki/agree-first#usescrollcompletion-hook).
+`useAgreeFirst` exposes the underlying state machine for advanced use. `useScrollCompletion` tracks completion for a scrollable element, including non-overflowing content. Both are public exports, but the component is the simplest starting point.

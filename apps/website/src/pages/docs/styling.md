@@ -27,7 +27,7 @@ The default modal supports light and dark system themes. Theme colors, spacing, 
 }
 ```
 
-The modal is rendered in a portal under `document.body`. Put theme variables on `:root`, `html`, `body`, or another selector that also contains the portal. See the [full CSS variable list in the README](https://github.com/felipecepluki/agree-first#css-custom-properties).
+The modal is rendered in a portal under `document.body`. Put theme variables on `:root`, `html`, `body`, or another selector that also contains the portal. The [default stylesheet](https://github.com/felipecepluki/agree-first/blob/main/src/styles/default.css) lists every available variable.
 
 ## Supply your own classes
 
